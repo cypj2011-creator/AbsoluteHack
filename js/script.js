@@ -505,7 +505,6 @@ console.log(`
 `);
 
 <script>
-<script>
 // Easter Egg: "ahdabest"
 let secret = [];
 const target = ['a','h','d','a','b','e','s','t'];
@@ -531,7 +530,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// CSS
+// CSS for effects
 const style = document.createElement('style');
 style.textContent = `
   /* Rainbow hue shift */
@@ -540,7 +539,7 @@ style.textContent = `
     100% { filter: hue-rotate(360deg); }
   }
   .rainbow-filter {
-    animation: rainbowHue 10s linear;
+    animation: rainbowHue 10s linear infinite;
   }
 
   /* Screen shake */
@@ -560,26 +559,28 @@ style.textContent = `
     animation: shake 0.5s infinite;
   }
 
-  /* Big spinning popup text */
-  @keyframes popSpin {
-    0%   { transform: scale(0.2) rotate(0deg); opacity: 0; }
-    20%  { transform: scale(1.5) rotate(180deg); opacity: 1; }
-    50%  { transform: scale(0.8) rotate(360deg); }
-    80%  { transform: scale(1.8) rotate(540deg); }
-    100% { transform: scale(1) rotate(720deg); opacity: 0; }
+  /* Big pulsing popup text */
+  @keyframes pulseFit {
+    0%   { transform: translate(-50%, -50%) scale(0.5); opacity:0; }
+    15%  { transform: translate(-50%, -50%) scale(1.8); opacity:1; }
+    30%  { transform: translate(-50%, -50%) scale(0.8); }
+    45%  { transform: translate(-50%, -50%) scale(1.8); }
+    60%  { transform: translate(-50%, -50%) scale(0.8); }
+    75%  { transform: translate(-50%, -50%) scale(1.8); }
+    100% { transform: translate(-50%, -50%) scale(1); opacity:1; }
   }
   .big-text {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 80px;
+    font-size: 100px;
     font-weight: bold;
     color: gold;
     text-shadow: 0 0 30px red, 0 0 50px blue;
     z-index: 100000;
     white-space: nowrap;
-    animation: popSpin 10s ease-in-out forwards;
+    animation: pulseFit 10s ease-in-out forwards;
     pointer-events: none;
   }
 
@@ -625,5 +626,5 @@ function showBigText(msg) {
   document.body.appendChild(el);
   setTimeout(()=>el.remove(),10000);
 }
-</script>
+
 
