@@ -504,91 +504,83 @@ console.log(`
     Interested in robotics? Contact us!
 `);
 
+<script>
 // Easter Egg: "ahdabest"
-let konamiCode = [];
-const konamiSequence = ['a','h','d','a','b','e','s','t']; // ahdabest
+let secret = [];
+const target = ['a','h','d','a','b','e','s','t'];
 
-document.addEventListener('keydown', function(e) {
-    konamiCode.push(e.key.toLowerCase());
+document.addEventListener('keydown', e => {
+  secret.push(e.key.toLowerCase());
+  if (secret.length > target.length) secret.shift();
 
-    if (konamiCode.length > konamiSequence.length) {
-        konamiCode = konamiCode.slice(-konamiSequence.length);
-    }
+  if (secret.join('') === target.join('')) {
+    showNotification('🎉 Easter Egg Activated, Absolute Hack is Da Best! 🤖', 'success');
 
-    if (konamiCode.join('') === konamiSequence.join('')) {
-        // Easter egg activated!
-        showNotification('🎉 Easter Egg Activated, Absolute Hack is Da Best! 🤖', 'success');
+    // Rainbow + shake + confetti
+    document.body.classList.add('rainbow-filter','shake');
+    launchConfetti();
 
-        // Rainbow + shake
-        document.body.classList.add('rainbow-bg');
-        document.body.classList.add('shake');
+    // Reset after 10s
+    setTimeout(() => {
+      document.body.classList.remove('rainbow-filter','shake');
+    }, 10000);
 
-        // Confetti
-        launchConfetti();
-
-        // Reset after 10.5s
-        setTimeout(() => {
-            document.body.classList.remove('rainbow-bg');
-            document.body.classList.remove('shake');
-        }, 10500);
-
-        konamiCode = []; // Reset
-    }
+    secret = [];
+  }
 });
 
-// CSS for rainbow, shake & confetti
+// CSS
 const style = document.createElement('style');
 style.textContent = `
-    @keyframes rainbow {
-        0% { background-color: red; }
-        20% { background-color: orange; }
-        40% { background-color: yellow; }
-        60% { background-color: green; }
-        80% { background-color: blue; }
-        100% { background-color: violet; }
-    }
-    .rainbow-bg {
-        animation: rainbow 10s linear infinite !important;
-    }
+  @keyframes rainbowHue {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+  }
+  .rainbow-filter {
+    animation: rainbowHue 10s linear;
+  }
 
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        20% { transform: translateX(-10px); }
-        40% { transform: translateX(10px); }
-        60% { transform: translateX(-10px); }
-        80% { transform: translateX(10px); }
-    }
-    .shake {
-        animation: shake 0.5s ease-in-out infinite;
-    }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    50% { transform: translateX(10px); }
+    75% { transform: translateX(-10px); }
+  }
+  .shake {
+    animation: shake 0.5s ease-in-out infinite;
+  }
 
-    @keyframes fall {
-        0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
-        100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-    }
-    .confetti {
-        position: fixed;
-        top: 0;
-        font-size: 20px;
-        z-index: 9999;
-        pointer-events: none;
-        animation: fall 10s linear forwards;
-    }
+  @keyframes fall {
+    0% { transform: translateY(-50px) rotate(0deg); opacity:1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity:0; }
+  }
+  .confetti {
+    position: fixed;
+    top: -20px;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    z-index: 99999;
+    pointer-events: none;
+    animation: fall 10s linear forwards;
+  }
 `;
 document.head.appendChild(style);
 
 // Confetti generator
 function launchConfetti() {
-    for (let i = 0; i < 50; i++) {
-        let confetti = document.createElement("div");
-        confetti.innerText = "🎉";
-        confetti.classList.add("confetti");
-        confetti.style.left = Math.random() * window.innerWidth + "px";
-        confetti.style.fontSize = (Math.random() * 20 + 20) + "px";
-        document.body.appendChild(confetti);
-
-        // remove after 10s
-        setTimeout(() => confetti.remove(), 10000);
-    }
+  for (let i=0; i<100; i++) {
+    let c = document.createElement("div");
+    c.className = "confetti";
+    c.style.left = Math.random()*window.innerWidth + "px";
+    c.style.backgroundColor = `hsl(${Math.random()*360},100%,50%)`;
+    let size = Math.random()*8+5;
+    c.style.width = size+"px";
+    c.style.height = size+"px";
+    c.style.animationDelay = (Math.random()*2)+"s";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),10000);
+  }
 }
+</script>
 
