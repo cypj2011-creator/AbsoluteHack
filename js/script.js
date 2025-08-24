@@ -519,31 +519,36 @@ document.addEventListener('keydown', function(e) {
         // Easter egg activated!
         showNotification('🎉 Easter Egg Activated, Absolute Hack is Da Best! 🤖', 'success');
 
-        // Rainbow background for 10s
-        document.body.style.animation = 'rainbow 10s linear infinite';
-
-        // Confetti effect
-        launchConfetti();
-
-        // Shake effect on page
+        // Rainbow + shake
+        document.body.classList.add('rainbow-bg');
         document.body.classList.add('shake');
 
-        // Reset after 10s
+        // Confetti
+        launchConfetti();
+
+        // Reset after 10.5s
         setTimeout(() => {
-            document.body.style.animation = '';
+            document.body.classList.remove('rainbow-bg');
             document.body.classList.remove('shake');
-        }, 10000);
+        }, 10500);
 
         konamiCode = []; // Reset
     }
 });
 
-// Rainbow animation
-const rainbowStyle = document.createElement('style');
-rainbowStyle.textContent = `
+// CSS for rainbow, shake & confetti
+const style = document.createElement('style');
+style.textContent = `
     @keyframes rainbow {
-        0% { filter: hue-rotate(0deg); }
-        100% { filter: hue-rotate(360deg); }
+        0% { background-color: red; }
+        20% { background-color: orange; }
+        40% { background-color: yellow; }
+        60% { background-color: green; }
+        80% { background-color: blue; }
+        100% { background-color: violet; }
+    }
+    .rainbow-bg {
+        animation: rainbow 10s linear infinite !important;
     }
 
     @keyframes shake {
@@ -553,35 +558,37 @@ rainbowStyle.textContent = `
         60% { transform: translateX(-10px); }
         80% { transform: translateX(10px); }
     }
-
     .shake {
         animation: shake 0.5s ease-in-out infinite;
     }
-`;
-document.head.appendChild(rainbowStyle);
 
-// Simple confetti generator
+    @keyframes fall {
+        0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+    .confetti {
+        position: fixed;
+        top: 0;
+        font-size: 20px;
+        z-index: 9999;
+        pointer-events: none;
+        animation: fall 10s linear forwards;
+    }
+`;
+document.head.appendChild(style);
+
+// Confetti generator
 function launchConfetti() {
     for (let i = 0; i < 50; i++) {
         let confetti = document.createElement("div");
         confetti.innerText = "🎉";
-        confetti.style.position = "fixed";
+        confetti.classList.add("confetti");
         confetti.style.left = Math.random() * window.innerWidth + "px";
-        confetti.style.top = "-50px";
-        confetti.style.fontSize = Math.random() * 20 + 20 + "px";
-        confetti.style.opacity = 0.8;
-        confetti.style.transition = "transform 10s linear, top 10s linear";
+        confetti.style.fontSize = (Math.random() * 20 + 20) + "px";
         document.body.appendChild(confetti);
 
-        setTimeout(() => {
-            confetti.style.top = window.innerHeight + "px";
-            confetti.style.transform = "rotate(" + Math.random() * 720 + "deg)";
-        }, 50);
-
-        // Remove after animation
-        setTimeout(() => {
-            confetti.remove();
-        }, 10000);
+        // remove after 10s
+        setTimeout(() => confetti.remove(), 10000);
     }
 }
 
