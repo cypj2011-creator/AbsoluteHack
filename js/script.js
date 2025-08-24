@@ -505,6 +505,7 @@ console.log(`
 `);
 
 <script>
+<script>
 // Easter Egg: "ahdabest"
 let secret = [];
 const target = ['a','h','d','a','b','e','s','t'];
@@ -516,13 +517,14 @@ document.addEventListener('keydown', e => {
   if (secret.join('') === target.join('')) {
     showNotification('🎉 Easter Egg Activated, Absolute Hack is Da Best! 🤖', 'success');
 
-    // Rainbow + shake + confetti
-    document.body.classList.add('rainbow-filter','shake');
+    // Add effects
+    document.body.classList.add('rainbow-filter', 'shake-screen');
     launchConfetti();
+    showBigText("Absolute is Da Best");
 
     // Reset after 10s
     setTimeout(() => {
-      document.body.classList.remove('rainbow-filter','shake');
+      document.body.classList.remove('rainbow-filter', 'shake-screen');
     }, 10000);
 
     secret = [];
@@ -532,6 +534,7 @@ document.addEventListener('keydown', e => {
 // CSS
 const style = document.createElement('style');
 style.textContent = `
+  /* Rainbow hue shift */
   @keyframes rainbowHue {
     0% { filter: hue-rotate(0deg); }
     100% { filter: hue-rotate(360deg); }
@@ -540,16 +543,47 @@ style.textContent = `
     animation: rainbowHue 10s linear;
   }
 
+  /* Screen shake */
   @keyframes shake {
-    0%,100% { transform: translateX(0); }
-    25% { transform: translateX(-10px); }
-    50% { transform: translateX(10px); }
-    75% { transform: translateX(-10px); }
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-10px, 5px); }
+    20% { transform: translate(15px, -5px); }
+    30% { transform: translate(-5px, -10px); }
+    40% { transform: translate(10px, 10px); }
+    50% { transform: translate(-15px, 5px); }
+    60% { transform: translate(5px, -15px); }
+    70% { transform: translate(10px, 5px); }
+    80% { transform: translate(-10px, -5px); }
+    90% { transform: translate(5px, 15px); }
   }
-  .shake {
-    animation: shake 0.5s ease-in-out infinite;
+  .shake-screen {
+    animation: shake 0.5s infinite;
   }
 
+  /* Big spinning popup text */
+  @keyframes popSpin {
+    0%   { transform: scale(0.2) rotate(0deg); opacity: 0; }
+    20%  { transform: scale(1.5) rotate(180deg); opacity: 1; }
+    50%  { transform: scale(0.8) rotate(360deg); }
+    80%  { transform: scale(1.8) rotate(540deg); }
+    100% { transform: scale(1) rotate(720deg); opacity: 0; }
+  }
+  .big-text {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 80px;
+    font-weight: bold;
+    color: gold;
+    text-shadow: 0 0 30px red, 0 0 50px blue;
+    z-index: 100000;
+    white-space: nowrap;
+    animation: popSpin 10s ease-in-out forwards;
+    pointer-events: none;
+  }
+
+  /* Confetti */
   @keyframes fall {
     0% { transform: translateY(-50px) rotate(0deg); opacity:1; }
     100% { transform: translateY(110vh) rotate(720deg); opacity:0; }
@@ -581,6 +615,15 @@ function launchConfetti() {
     document.body.appendChild(c);
     setTimeout(()=>c.remove(),10000);
   }
+}
+
+// Big popup text generator
+function showBigText(msg) {
+  let el = document.createElement("div");
+  el.className = "big-text";
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),10000);
 }
 </script>
 
