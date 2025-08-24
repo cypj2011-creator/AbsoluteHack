@@ -506,123 +506,101 @@ console.log(`
 
 // Add some fun interactions
 // Easter Egg: "ahdabest"
-let secret = [];
-const target = ['a','h','d','a','b','e','s','t'];
+// =======================
+// Easter Egg (ahdabest)
+// =======================
+let konamiCode = [];
+const konamiSequence = [65, 72, 68, 65, 66, 69, 83, 84]; // A H D A B E S T
 
-document.addEventListener('keydown', e => {
-  secret.push(e.key.toLowerCase());
-  if (secret.length > target.length) secret.shift();
+document.addEventListener("keydown", function(e) {
+    konamiCode.push(e.keyCode);
 
-  if (secret.join('') === target.join('')) {
-    showNotification('🎉 Easter Egg Activated, Absolute Hack is Da Best! 🤖', 'success');
+    if (konamiCode.length > konamiSequence.length) {
+        konamiCode = konamiCode.slice(-konamiSequence.length);
+    }
 
-    // Add effects
-    document.body.classList.add('rainbow-filter', 'shake-screen');
-    launchConfetti();
-    showBigText("Absolute is Da Best");
-
-    // Reset after 10s
-    setTimeout(() => {
-      document.body.classList.remove('rainbow-filter', 'shake-screen');
-    }, 10000);
-
-    secret = [];
-  }
+    if (
+        konamiCode.length === konamiSequence.length &&
+        konamiCode.every((code, index) => code === konamiSequence[index])
+    ) {
+        activateEasterEgg();
+        konamiCode = []; // reset
+    }
 });
 
-// CSS for effects
-const style = document.createElement('style');
+function activateEasterEgg() {
+    // Add rainbow effect to whole page
+    document.body.classList.add("rainbow-mode");
+
+    // Create overlay text
+    const bigText = document.createElement("div");
+    bigText.className = "easter-egg-text";
+    bigText.textContent = "Absolute is Da Best!";
+    document.body.appendChild(bigText);
+
+    // Create confetti
+    for (let i = 0; i < 120; i++) {
+        const confetti = document.createElement("div");
+        confetti.className = "confetti";
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.backgroundColor =
+            `hsl(${Math.random() * 360}, 100%, 50%)`;
+        confetti.style.animationDuration = (5 + Math.random() * 5) + "s";
+        document.body.appendChild(confetti);
+    }
+
+    // Remove after 10 seconds
+    setTimeout(() => {
+        document.body.classList.remove("rainbow-mode");
+        bigText.remove();
+        document.querySelectorAll(".confetti").forEach(el => el.remove());
+    }, 10000);
+}
+
+// =======================
+// CSS for Effects
+// =======================
+const style = document.createElement("style");
 style.textContent = `
-  /* Rainbow hue shift */
-  @keyframes rainbowHue {
+@keyframes rainbow {
     0% { filter: hue-rotate(0deg); }
     100% { filter: hue-rotate(360deg); }
-  }
-  .rainbow-filter {
-    animation: rainbowHue 10s linear infinite;
-  }
-
-  /* Screen shake */
-  @keyframes shake {
-    0%, 100% { transform: translate(0, 0); }
-    10% { transform: translate(-10px, 5px); }
-    20% { transform: translate(15px, -5px); }
-    30% { transform: translate(-5px, -10px); }
-    40% { transform: translate(10px, 10px); }
-    50% { transform: translate(-15px, 5px); }
-    60% { transform: translate(5px, -15px); }
-    70% { transform: translate(10px, 5px); }
-    80% { transform: translate(-10px, -5px); }
-    90% { transform: translate(5px, 15px); }
-  }
-  .shake-screen {
-    animation: shake 0.5s infinite;
-  }
-
-  /* Big pulsing popup text */
-  @keyframes pulseFit {
-    0%   { transform: translate(-50%, -50%) scale(0.5); opacity:0; }
-    15%  { transform: translate(-50%, -50%) scale(1.8); opacity:1; }
-    30%  { transform: translate(-50%, -50%) scale(0.8); }
-    45%  { transform: translate(-50%, -50%) scale(1.8); }
-    60%  { transform: translate(-50%, -50%) scale(0.8); }
-    75%  { transform: translate(-50%, -50%) scale(1.8); }
-    100% { transform: translate(-50%, -50%) scale(1); opacity:1; }
-  }
-  .big-text {
+}
+@keyframes pulseSpin {
+    0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+    25% { transform: translate(-50%, -50%) scale(1.5) rotate(90deg); }
+    50% { transform: translate(-50%, -50%) scale(0.8) rotate(180deg); }
+    75% { transform: translate(-50%, -50%) scale(1.5) rotate(270deg); }
+}
+@keyframes fall {
+    0% { top: -20px; opacity: 1; transform: rotate(0deg); }
+    100% { top: 110vh; opacity: 0; transform: rotate(360deg); }
+}
+.rainbow-mode {
+    animation: rainbow 10s linear infinite;
+}
+.easter-egg-text {
     position: fixed;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 100px;
+    font-size: 5rem;
     font-weight: bold;
-    color: gold;
-    text-shadow: 0 0 30px red, 0 0 50px blue;
-    z-index: 100000;
-    white-space: nowrap;
-    animation: pulseFit 10s ease-in-out forwards;
-    pointer-events: none;
-  }
-
-  /* Confetti */
-  @keyframes fall {
-    0% { transform: translateY(-50px) rotate(0deg); opacity:1; }
-    100% { transform: translateY(110vh) rotate(720deg); opacity:0; }
-  }
-  .confetti {
+    color: white;
+    text-shadow: 3px 3px 10px black;
+    z-index: 10000;
+    animation: pulseSpin 2s ease-in-out infinite;
+}
+.confetti {
     position: fixed;
-    top: -20px;
     width: 10px;
-    height: 10px;
-    background-color: red;
-    z-index: 99999;
-    pointer-events: none;
-    animation: fall 10s linear forwards;
-  }
+    height: 20px;
+    top: -20px;
+    border-radius: 3px;
+    z-index: 9999;
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
+}
 `;
 document.head.appendChild(style);
 
-// Confetti generator
-function launchConfetti() {
-  for (let i=0; i<100; i++) {
-    let c = document.createElement("div");
-    c.className = "confetti";
-    c.style.left = Math.random()*window.innerWidth + "px";
-    c.style.backgroundColor = `hsl(${Math.random()*360},100%,50%)`;
-    let size = Math.random()*8+5;
-    c.style.width = size+"px";
-    c.style.height = size+"px";
-    c.style.animationDelay = (Math.random()*2)+"s";
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),10000);
-  }
-}
-
-// Big popup text generator
-function showBigText(msg) {
-  let el = document.createElement("div");
-  el.className = "big-text";
-  el.textContent = msg;
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(),10000);
-}
