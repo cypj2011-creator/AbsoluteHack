@@ -504,42 +504,84 @@ console.log(`
     Interested in robotics? Contact us!
 `);
 
-// Add some fun interactions
+// Easter Egg: "ahdabest"
 let konamiCode = [];
-const konamiSequence = [65, 72, 68, 65, 66, 69, 83, 84]; // ahdabest
+const konamiSequence = ['a','h','d','a','b','e','s','t']; // ahdabest
 
 document.addEventListener('keydown', function(e) {
-    konamiCode.push(e.keyCode);
-    
+    konamiCode.push(e.key.toLowerCase());
+
     if (konamiCode.length > konamiSequence.length) {
         konamiCode = konamiCode.slice(-konamiSequence.length);
     }
-    
-    if (konamiCode.length === konamiSequence.length && 
-        konamiCode.every((code, index) => code === konamiSequence[index])) {
-        
+
+    if (konamiCode.join('') === konamiSequence.join('')) {
         // Easter egg activated!
         showNotification('🎉 Easter Egg Activated, Absolute Hack is Da Best! 🤖', 'success');
-        
-        // Add some fun effects
-        document.body.style.animation = 'rainbow 5s ease-in-out';
+
+        // Rainbow background for 10s
+        document.body.style.animation = 'rainbow 10s linear infinite';
+
+        // Confetti effect
+        launchConfetti();
+
+        // Shake effect on page
+        document.body.classList.add('shake');
+
+        // Reset after 10s
         setTimeout(() => {
             document.body.style.animation = '';
-        }, 2000);
-        
+            document.body.classList.remove('shake');
+        }, 10000);
+
         konamiCode = []; // Reset
     }
 });
 
-// Add rainbow animation for easter egg
+// Rainbow animation
 const rainbowStyle = document.createElement('style');
 rainbowStyle.textContent = `
     @keyframes rainbow {
         0% { filter: hue-rotate(0deg); }
-        25% { filter: hue-rotate(90deg); }
-        50% { filter: hue-rotate(180deg); }
-        75% { filter: hue-rotate(270deg); }
         100% { filter: hue-rotate(360deg); }
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20% { transform: translateX(-10px); }
+        40% { transform: translateX(10px); }
+        60% { transform: translateX(-10px); }
+        80% { transform: translateX(10px); }
+    }
+
+    .shake {
+        animation: shake 0.5s ease-in-out infinite;
     }
 `;
 document.head.appendChild(rainbowStyle);
+
+// Simple confetti generator
+function launchConfetti() {
+    for (let i = 0; i < 50; i++) {
+        let confetti = document.createElement("div");
+        confetti.innerText = "🎉";
+        confetti.style.position = "fixed";
+        confetti.style.left = Math.random() * window.innerWidth + "px";
+        confetti.style.top = "-50px";
+        confetti.style.fontSize = Math.random() * 20 + 20 + "px";
+        confetti.style.opacity = 0.8;
+        confetti.style.transition = "transform 10s linear, top 10s linear";
+        document.body.appendChild(confetti);
+
+        setTimeout(() => {
+            confetti.style.top = window.innerHeight + "px";
+            confetti.style.transform = "rotate(" + Math.random() * 720 + "deg)";
+        }, 50);
+
+        // Remove after animation
+        setTimeout(() => {
+            confetti.remove();
+        }, 10000);
+    }
+}
+
