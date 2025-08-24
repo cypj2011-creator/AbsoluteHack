@@ -506,7 +506,7 @@ console.log(`
 
 // Add some fun interactions
 let konamiCode = [];
-const konamiSequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // Up Up Down Down Left Right Left Right B A
+const konamiSequence = [65, 72, 68, 65, 66, 69, 83, 84]; // ahdabest
 
 document.addEventListener('keydown', function(e) {
     konamiCode.push(e.keyCode);
@@ -519,10 +519,10 @@ document.addEventListener('keydown', function(e) {
         konamiCode.every((code, index) => code === konamiSequence[index])) {
         
         // Easter egg activated!
-        showNotification('🎉 Konami Code activated! You found our secret! 🤖', 'success');
+        showNotification('🎉 Easter Egg Activated, Absolute Hack is Da Best! 🤖', 'success');
         
         // Add some fun effects
-        document.body.style.animation = 'rainbow 2s ease-in-out';
+        document.body.style.animation = 'rainbow 5s ease-in-out';
         setTimeout(() => {
             document.body.style.animation = '';
         }, 2000);
