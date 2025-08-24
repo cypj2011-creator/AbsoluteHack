@@ -505,7 +505,6 @@ console.log(`
 `);
 
 // Add some fun interactions
-// Easter Egg: "ahdabest"
 // =======================
 // Easter Egg (ahdabest)
 // =======================
@@ -530,9 +529,9 @@ document.addEventListener("keydown", function(e) {
 
 function activateEasterEgg() {
     // Add rainbow effect to whole page
-    document.body.classList.add("rainbow-mode");
+    document.body.classList.add("rainbow-mode", "shake-screen");
 
-    // Create overlay text
+    // Create overlay text (fixed to viewport, follows you anywhere)
     const bigText = document.createElement("div");
     bigText.className = "easter-egg-text";
     bigText.textContent = "Absolute is Da Best!";
@@ -551,7 +550,7 @@ function activateEasterEgg() {
 
     // Remove after 10 seconds
     setTimeout(() => {
-        document.body.classList.remove("rainbow-mode");
+        document.body.classList.remove("rainbow-mode", "shake-screen");
         bigText.remove();
         document.querySelectorAll(".confetti").forEach(el => el.remove());
     }, 10000);
@@ -576,11 +575,22 @@ style.textContent = `
     0% { top: -20px; opacity: 1; transform: rotate(0deg); }
     100% { top: 110vh; opacity: 0; transform: rotate(360deg); }
 }
+@keyframes shake {
+    0% { transform: translate(0, 0); }
+    20% { transform: translate(-10px, 5px); }
+    40% { transform: translate(10px, -5px); }
+    60% { transform: translate(-10px, -5px); }
+    80% { transform: translate(10px, 5px); }
+    100% { transform: translate(0, 0); }
+}
 .rainbow-mode {
     animation: rainbow 10s linear infinite;
 }
+.shake-screen {
+    animation: shake 0.3s infinite;
+}
 .easter-egg-text {
-    position: fixed;
+    position: fixed; /* stays in the viewport */
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     font-size: 5rem;
@@ -589,6 +599,7 @@ style.textContent = `
     text-shadow: 3px 3px 10px black;
     z-index: 10000;
     animation: pulseSpin 2s ease-in-out infinite;
+    pointer-events: none; /* don't block clicks */
 }
 .confetti {
     position: fixed;
@@ -603,4 +614,5 @@ style.textContent = `
 }
 `;
 document.head.appendChild(style);
+
 
