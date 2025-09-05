@@ -509,100 +509,78 @@ console.log(`
 let secret = [];
 const targets = ["ahdabest", "28028"];
 
-// Listen for key presses
 document.addEventListener("keydown", e => {
   secret.push(e.key.toLowerCase());
-  if (secret.length > 10) secret.shift(); // keep last 10 keys
+  if (secret.length > 10) secret.shift();
 
   const typed = secret.join("");
   if (targets.some(t => typed.endsWith(t))) {
-    activateEgg();
+    activateEasterEgg();
     secret = [];
   }
 });
 
-function activateEgg() {
-  // ✅ Notification
+function activateEasterEgg() {
+  // Notification
   if (typeof showNotification === "function") {
     showNotification("🎉 Easter Egg Activated! 🤖", "success");
   }
 
-  // ✅ Start all effects together
-  startConfettiRainbowShake();
+  // 🌈 Rainbow + Shake on the whole page for 10s
+  document.body.style.animation = "rainbow 10s linear, shake 0.5s infinite";
+  document.documentElement.style.animation = "rainbow 10s linear, shake 0.5s infinite";
+
+  // 🎊 Confetti spawner
+  const interval = setInterval(() => spawnConfetti(15), 150);
+
+  // Stop everything after 10s
+  setTimeout(() => {
+    clearInterval(interval);
+    document.body.style.animation = "";
+    document.documentElement.style.animation = "";
+    document.querySelectorAll(".eg-confetti").forEach(el => el.remove());
+  }, 10000);
 }
 
-// ====== Confetti + Rainbow + Shake effect ======
-(function() {
-  const STYLE_ID = "easter-egg-style";
-  if (!document.getElementById(STYLE_ID)) {
-    const s = document.createElement("style");
-    s.id = STYLE_ID;
-    s.textContent = `
-      @keyframes rainbow {
-        0% { filter: hue-rotate(0deg); }
-        100% { filter: hue-rotate(360deg); }
-      }
-      @keyframes shake {
-        0%,100% { transform: translate(0,0); }
-        25% { transform: translate(-10px,5px); }
-        50% { transform: translate(10px,-5px); }
-        75% { transform: translate(-5px,10px); }
-      }
-      @keyframes confettiFall {
-        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-        100% { transform: translateY(120vh) rotate(720deg); opacity: 0; }
-      }
-      .eg-confetti {
-        position: fixed;
-        pointer-events: none;
-        z-index: 9999;
-        animation-name: confettiFall;
-        animation-timing-function: linear;
-        animation-fill-mode: forwards;
-      }
-    `;
-    document.head.appendChild(s);
+// ====== Styles ======
+const style = document.createElement("style");
+style.textContent = `
+@keyframes rainbow {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+@keyframes shake {
+  0%,100% { transform: translate(0,0); }
+  25% { transform: translate(-10px,5px); }
+  50% { transform: translate(10px,-5px); }
+  75% { transform: translate(-5px,10px); }
+}
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+.eg-confetti {
+  position: fixed;
+  top: -10px;
+  pointer-events: none;
+  z-index: 9999;
+  animation: confettiFall linear forwards;
+}
+`;
+document.head.appendChild(style);
+
+// ====== Confetti ======
+function spawnConfetti(count) {
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement("div");
+    el.className = "eg-confetti";
+    const size = Math.random() * 8 + 5;
+    el.style.width = size + "px";
+    el.style.height = size * 0.6 + "px";
+    el.style.left = Math.random() * window.innerWidth + "px";
+    el.style.background = `hsl(${Math.random()*360}, 90%, 55%)`;
+    el.style.animationDuration = (Math.random() * 2 + 3) + "s";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 6000);
   }
-
-  let running = false;
-  window.startConfettiRainbowShake = function() {
-    if (running) return;
-    running = true;
-
-    // Save previous animation state
-    const prevAnim = document.body.style.animation;
-
-    // Apply rainbow + shake for 10s
-    document.body.style.animation =
-      "rainbow 10s linear infinite, shake 0.5s ease-in-out infinite";
-
-    // Spawn confetti every 150ms
-    const interval = setInterval(() => spawnBurst(20), 150);
-
-    // Stop everything after 10s
-    setTimeout(() => {
-      clearInterval(interval);
-      document.body.style.animation = prevAnim; // restore
-      document.querySelectorAll(".eg-confetti").forEach(el => el.remove());
-      running = false;
-    }, 10000);
-  };
-
-  function spawnBurst(count) {
-    for (let i = 0; i < count; i++) {
-      const el = document.createElement("div");
-      el.className = "eg-confetti";
-
-      const size = Math.random() * 10 + 5;
-      el.style.width = size + "px";
-      el.style.height = size * 0.6 + "px";
-      el.style.left = Math.random() * window.innerWidth + "px";
-      el.style.top = "-10px";
-      el.style.background = `hsl(${Math.random()*360}, 90%, 55%)`;
-      el.style.animationDuration = (Math.random() * 3 + 7) + "s"; // lasts long
-
-      document.body.appendChild(el);
-      setTimeout(() => el.remove(), 11000); // cleanup after 11s
-    }
-  }
-})();
+}
