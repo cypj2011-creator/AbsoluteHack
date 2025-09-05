@@ -527,17 +527,11 @@ function activateEgg() {
     showNotification("🎉 Easter Egg Activated! 🤖", "success");
   }
 
-  // ✅ Rainbow effect (your version)
-  document.body.style.animation = 'rainbow 10s ease-in-out';
-  setTimeout(() => {
-    document.body.style.animation = '';
-  }, 10000);
-
-  // ✅ Confetti + shake (your long effect)
-  startConfettiAndShake();
+  // ✅ Start all effects together
+  startConfettiRainbowShake();
 }
 
-// ====== Confetti + Shake effect ======
+// ====== Confetti + Rainbow + Shake effect ======
 (function() {
   const STYLE_ID = "easter-egg-style";
   if (!document.getElementById(STYLE_ID)) {
@@ -571,21 +565,27 @@ function activateEgg() {
   }
 
   let running = false;
-  window.startConfettiAndShake = function() {
+  window.startConfettiRainbowShake = function() {
     if (running) return;
     running = true;
 
+    // Save previous animation state
     const prevAnim = document.body.style.animation;
-    document.body.style.animation = "shake 0.5s ease-in-out infinite";
 
+    // Apply rainbow + shake for 10s
+    document.body.style.animation =
+      "rainbow 10s linear infinite, shake 0.5s ease-in-out infinite";
+
+    // Spawn confetti every 150ms
     const interval = setInterval(() => spawnBurst(20), 150);
 
+    // Stop everything after 10s
     setTimeout(() => {
       clearInterval(interval);
-      document.body.style.animation = prevAnim;
+      document.body.style.animation = prevAnim; // restore
       document.querySelectorAll(".eg-confetti").forEach(el => el.remove());
       running = false;
-    }, 5000);
+    }, 10000);
   };
 
   function spawnBurst(count) {
@@ -599,10 +599,10 @@ function activateEgg() {
       el.style.left = Math.random() * window.innerWidth + "px";
       el.style.top = "-10px";
       el.style.background = `hsl(${Math.random()*360}, 90%, 55%)`;
-      el.style.animationDuration = (Math.random() * 3 + 4) + "s";
+      el.style.animationDuration = (Math.random() * 3 + 7) + "s"; // lasts long
 
       document.body.appendChild(el);
-      setTimeout(() => el.remove(), 8000);
+      setTimeout(() => el.remove(), 11000); // cleanup after 11s
     }
   }
 })();
