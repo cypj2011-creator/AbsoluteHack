@@ -521,22 +521,24 @@ document.addEventListener("keydown", e => {
 });
 
 function activateEasterEgg() {
+  // Notification
   if (typeof showNotification === "function") {
-    showNotification("🌈 Smooth Rainbow + Confetti 🎊", "success");
+    showNotification("🎉 Easter Egg Activated! 🤖", "success");
   }
 
-  // 🌈 Rainbow + GENTLE SHAKE for 10s
-  document.body.style.animation = "rainbow 10s linear, gentleShake 0.25s infinite";
-  document.documentElement.style.animation = "rainbow 10s linear, gentleShake 0.25s infinite";
+  // 🌈 Rainbow + Shake on the whole page for 10s
+  document.body.style.animation = "rainbow 10s linear, shake 0.5s infinite";
+  document.documentElement.style.animation = "rainbow 10s linear, shake 0.5s infinite";
 
-  // 🎊 CONFETTI STORM
-  const interval = setInterval(() => spawnConfetti(500), 50);
+  // 🎊 Confetti spawner
+  const interval = setInterval(() => spawnConfetti(15), 150);
 
-  // Stop after 10s
+  // Stop everything after 10s
   setTimeout(() => {
     clearInterval(interval);
     document.body.style.animation = "";
     document.documentElement.style.animation = "";
+    document.querySelectorAll(".eg-confetti").forEach(el => el.remove());
   }, 10000);
 }
 
@@ -547,18 +549,19 @@ style.textContent = `
   0% { filter: hue-rotate(0deg); }
   100% { filter: hue-rotate(360deg); }
 }
-@keyframes gentleShake {
+@keyframes shake {
   0%,100% { transform: translate(0,0); }
-  25% { transform: translate(-5px, 3px); }
-  50% { transform: translate(5px, -3px); }
-  75% { transform: translate(-4px, -2px); }
+  25% { transform: translate(-10px,5px); }
+  50% { transform: translate(10px,-5px); }
+  75% { transform: translate(-5px,10px); }
 }
 @keyframes confettiFall {
   0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(1440deg); opacity: 0; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
 }
 .eg-confetti {
   position: fixed;
+  top: -10px;
   pointer-events: none;
   z-index: 9999;
   animation: confettiFall linear forwards;
@@ -571,20 +574,13 @@ function spawnConfetti(count) {
   for (let i = 0; i < count; i++) {
     const el = document.createElement("div");
     el.className = "eg-confetti";
-
-    const size = Math.random() * 10 + 6;
+    const size = Math.random() * 8 + 5;
     el.style.width = size + "px";
     el.style.height = size * 0.6 + "px";
-
     el.style.left = Math.random() * window.innerWidth + "px";
-    el.style.top = "-20px";
-
     el.style.background = `hsl(${Math.random()*360}, 90%, 55%)`;
-    el.style.borderRadius = Math.random() > 0.5 ? "50%" : "3px";
-
-    el.style.animationDuration = (Math.random() * 6 + 6) + "s";
-    el.addEventListener("animationend", () => el.remove());
-
+    el.style.animationDuration = (Math.random() * 2 + 3) + "s";
     document.body.appendChild(el);
+    setTimeout(() => el.remove(), 6000);
   }
 }
