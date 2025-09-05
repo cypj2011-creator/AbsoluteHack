@@ -505,4 +505,95 @@ console.log(`
 `);
 
 // Add some fun interactions
-v
+// Easter Egg: triggers on "ahdabest" or "28028"
+let secret = [];
+const targets = ["ahdabest", "28028"];
+
+document.addEventListener("keydown", e => {
+  secret.push(e.key.toLowerCase());
+  if (secret.length > 10) secret.shift();
+
+  const typed = secret.join("");
+  if (targets.some(t => typed.endsWith(t))) {
+    activateEasterEgg();
+    secret = [];
+  }
+});
+
+function activateEasterEgg() {
+  if (typeof showNotification === "function") {
+    showNotification("💥 EARTHQUAKE + CONFETTI STORM 🌋🎊", "success");
+  }
+
+  // 🌈 Rainbow + ULTRA SHAKE for 10s
+  document.body.style.animation = "rainbow 10s linear, shake 0.03s infinite";
+  document.documentElement.style.animation = "rainbow 10s linear, shake 0.03s infinite";
+
+  // 🎊 MASSIVE CONFETTI STORM
+  const interval = setInterval(() => spawnConfetti(1000), 30);
+
+  // Stop after 10s (animations & stop spawning) but leave pile
+  setTimeout(() => {
+    clearInterval(interval);
+    document.body.style.animation = "";
+    document.documentElement.style.animation = "";
+  }, 10000);
+}
+
+// ====== Styles ======
+const style = document.createElement("style");
+style.textContent = `
+@keyframes rainbow {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+@keyframes shake {
+  0%,100% { transform: translate(0,0) rotate(0deg); }
+  10% { transform: translate(-80px,60px) rotate(-15deg); }
+  20% { transform: translate(90px,-70px) rotate(15deg); }
+  30% { transform: translate(-100px,40px) rotate(-20deg); }
+  40% { transform: translate(100px,-60px) rotate(20deg); }
+  50% { transform: translate(-90px,80px) rotate(-12deg); }
+  60% { transform: translate(80px,-100px) rotate(12deg); }
+  70% { transform: translate(-110px,50px) rotate(-18deg); }
+  80% { transform: translate(110px,-50px) rotate(18deg); }
+  90% { transform: translate(-70px,100px) rotate(-10deg); }
+}
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(1440deg); opacity: 1; } /* stays visible */
+}
+.eg-confetti {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  animation: confettiFall linear forwards;
+}
+`;
+document.head.appendChild(style);
+
+// ====== Confetti ======
+function spawnConfetti(count) {
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement("div");
+    el.className = "eg-confetti";
+
+    const size = Math.random() * 10 + 6;
+    el.style.width = size + "px";
+    el.style.height = size * 0.6 + "px";
+
+    // Anywhere across the screen
+    el.style.left = Math.random() * window.innerWidth + "px";
+    el.style.top = "-20px"; // always fall from above
+
+    el.style.background = `hsl(${Math.random()*360}, 90%, 55%)`;
+    el.style.borderRadius = Math.random() > 0.5 ? "50%" : "3px";
+
+    // Slower fall = time to reach bottom
+    el.style.animationDuration = (Math.random() * 6 + 6) + "s";
+
+    // ❌ DO NOT REMOVE AFTER → pile up!
+    document.body.appendChild(el);
+  }
+}
+
