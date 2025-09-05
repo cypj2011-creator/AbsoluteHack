@@ -524,6 +524,12 @@ document.addEventListener("keydown", e => {
 function activateEasterEgg() {
   showNotification("🎉 Easter Egg Activated, Absolute Hack is Da Best! 🤖", "success");
 
+  // 🌈 Rainbow effect (your version, runs together with everything)
+  document.body.style.animation = 'rainbow 10s ease-in-out';
+  setTimeout(() => {
+      document.body.style.animation = '';
+  }, 10000);
+
   // ====== Easter Egg (uses direct style.animation on body/html) ======
 (function() {
   // typing buffer for triggers
@@ -608,7 +614,6 @@ function activateEasterEgg() {
     const prevBodyAnim = document.body.style.animation || "";
 
     // Build animation string exactly via style (rainbow + shake together)
-    // You can adjust durations here (rainbow 10s, shake 0.5s repeating)
     const rainbowAnim = "rainbow 10s linear infinite";
     const shakeAnim = "shake 0.5s ease-in-out infinite";
     const combined = `${rainbowAnim}, ${shakeAnim}`;
@@ -631,7 +636,6 @@ function activateEasterEgg() {
         document.querySelectorAll(".eg-confetti").forEach(n => n.remove());
       }, 3500);
 
-      // restore previous inline animation values exactly as they were
       document.documentElement.style.animation = prevHtmlAnim;
       document.body.style.animation = prevBodyAnim;
 
@@ -651,9 +655,9 @@ function activateEasterEgg() {
       // Size
       const size = (Math.random()*12 + 6) | 0; // 6-18px
       el.style.width = size + "px";
-      el.style.height = (size*0.6 | 0) + "px"; // rectangle-ish
+      el.style.height = (size*0.6 | 0) + "px";
 
-      // Start position: anywhere across viewport (use vw/vh units for resilience)
+      // Start position
       const startX = Math.random() * vw;
       const startY = Math.random() * vh;
       el.style.left = startX + "px";
@@ -663,28 +667,24 @@ function activateEasterEgg() {
       el.style.background = `hsl(${Math.random()*360}, 90%, 55%)`;
       el.style.borderRadius = (Math.random() > 0.5 ? "2px" : "50%");
 
-      // Animation duration + delay + horizontal drift + spin
+      // Animation duration + delay + spin
       const dur = (Math.random() * 3 + 7).toFixed(2); // 7-10s
       const delay = (Math.random() * 0.5).toFixed(2);
       el.style.animationDuration = `${dur}s`;
       el.style.animationDelay = `${delay}s`;
 
-      // drift in vw to allow horizontal movement
-      const drift = ((Math.random() - 0.5) * 40).toFixed(1) + "vw";
-      el.style.setProperty("--drift", drift);
-
-      // spin amount (applied inside keyframes by var)
+      // spin
       const spin = ((Math.random() * 720) + 360) | 0;
       el.style.setProperty("--spin", spin + "deg");
 
-      // Slight opacity randomness
+      // opacity
       el.style.opacity = (0.6 + Math.random()*0.4).toFixed(2);
 
       document.body.appendChild(el);
 
-      // cleanup element after it should be done
       const removeAfter = (parseFloat(dur) + parseFloat(delay)) * 1000 + 200;
       setTimeout(() => el.remove(), removeAfter);
     }
   }
 })();
+}
