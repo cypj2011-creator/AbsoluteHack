@@ -526,14 +526,14 @@ function activateEasterEgg() {
     showNotification("🎉 Easter Egg Activated! 🤖", "success");
   }
 
-  // 🌈 Rainbow + Shake on the whole page for 10s
-  document.body.style.animation = "rainbow 10s linear, shake 0.5s infinite";
-  document.documentElement.style.animation = "rainbow 10s linear, shake 0.5s infinite";
+  // 🌈 Rainbow + Hard Shake for 10s
+  document.body.style.animation = "rainbow 10s linear, shake 0.2s infinite";
+  document.documentElement.style.animation = "rainbow 10s linear, shake 0.2s infinite";
 
-  // 🎊 Confetti spawner
-  const interval = setInterval(() => spawnConfetti(15), 150);
+  // 🎊 Confetti (BIG bursts now)
+  const interval = setInterval(() => spawnConfetti(50), 100);
 
-  // Stop everything after 10s
+  // Stop after 10s
   setTimeout(() => {
     clearInterval(interval);
     document.body.style.animation = "";
@@ -550,14 +550,15 @@ style.textContent = `
   100% { filter: hue-rotate(360deg); }
 }
 @keyframes shake {
-  0%,100% { transform: translate(0,0); }
-  25% { transform: translate(-10px,5px); }
-  50% { transform: translate(10px,-5px); }
-  75% { transform: translate(-5px,10px); }
+  0%,100% { transform: translate(0,0) rotate(0deg); }
+  20% { transform: translate(-20px,10px) rotate(-5deg); }
+  40% { transform: translate(20px,-15px) rotate(5deg); }
+  60% { transform: translate(-15px,20px) rotate(-3deg); }
+  80% { transform: translate(15px,-20px) rotate(3deg); }
 }
 @keyframes confettiFall {
   0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  100% { transform: translateY(120vh) rotate(1080deg); opacity: 0; }
 }
 .eg-confetti {
   position: fixed;
@@ -574,13 +575,18 @@ function spawnConfetti(count) {
   for (let i = 0; i < count; i++) {
     const el = document.createElement("div");
     el.className = "eg-confetti";
-    const size = Math.random() * 8 + 5;
+
+    const size = Math.random() * 10 + 6;
     el.style.width = size + "px";
     el.style.height = size * 0.6 + "px";
     el.style.left = Math.random() * window.innerWidth + "px";
+
     el.style.background = `hsl(${Math.random()*360}, 90%, 55%)`;
-    el.style.animationDuration = (Math.random() * 2 + 3) + "s";
+    el.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+
+    el.style.animationDuration = (Math.random() * 3 + 4) + "s";
     document.body.appendChild(el);
-    setTimeout(() => el.remove(), 6000);
+
+    setTimeout(() => el.remove(), 7000);
   }
 }
