@@ -596,4 +596,3 @@ function spawnConfetti(count) {
     document.body.appendChild(el);
   }
 }
-
