@@ -524,134 +524,167 @@ document.addEventListener("keydown", e => {
 function activateEasterEgg() {
   showNotification("🎉 Easter Egg Activated, Absolute Hack is Da Best! 🤖", "success");
 
-  // ===== Easter Egg: "ahdabest" or "28028" =====
-(function () {
-  let buffer = "";
-  let eggActive = false;
+  // ====== Easter Egg (uses direct style.animation on body/html) ======
+(function() {
+  // typing buffer for triggers
+  let buf = "";
+  const targets = ["ahdabest","28028"];
 
-  // Listen for typing anywhere
-  document.addEventListener("keydown", (e) => {
-    buffer += (e.key || "").toLowerCase();
-    if (buffer.length > 20) buffer = buffer.slice(-20);
-    if (/(ahdabest|28028)$/.test(buffer)) {
-      buffer = "";
-      if (!eggActive) activateEasterEgg();
+  // ensure keyframes + confetti CSS is present once
+  const STYLE_ID = "easter-egg-inline-style";
+  if (!document.getElementById(STYLE_ID)) {
+    const s = document.createElement("style");
+    s.id = STYLE_ID;
+    s.textContent = `
+      /* rainbow (multi-step like original) */
+      @keyframes rainbow {
+        0% { filter: hue-rotate(0deg); }
+        25% { filter: hue-rotate(90deg); }
+        50% { filter: hue-rotate(180deg); }
+        75% { filter: hue-rotate(270deg); }
+        100% { filter: hue-rotate(360deg); }
+      }
+
+      /* screen shake */
+      @keyframes shake {
+        0%,100% { transform: translate(0,0); }
+        10% { transform: translate(-10px,5px); }
+        20% { transform: translate(15px,-5px); }
+        30% { transform: translate(-5px,-10px); }
+        40% { transform: translate(10px,10px); }
+        50% { transform: translate(-15px,5px); }
+        60% { transform: translate(5px,-15px); }
+        70% { transform: translate(10px,5px); }
+        80% { transform: translate(-10px,-5px); }
+        90% { transform: translate(5px,15px); }
+      }
+
+      /* confetti fall */
+      @keyframes confettiFall {
+        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(120vh) rotate(720deg); opacity: 0; }
+      }
+
+      .eg-confetti {
+        position: fixed;
+        pointer-events: none;
+        z-index: 2147483647; /* extremely high so it's on top */
+        will-change: transform, opacity;
+        animation-name: confettiFall;
+        animation-timing-function: linear;
+        animation-fill-mode: forwards;
+      }
+    `;
+    document.head.appendChild(s);
+  }
+
+  // Listen for keys
+  document.addEventListener("keydown", (ev) => {
+    const k = (ev.key || "").toLowerCase();
+    buf += k;
+    if (buf.length > 20) buf = buf.slice(-20);
+
+    for (const t of targets) {
+      if (buf.endsWith(t)) {
+        buf = "";
+        activateEgg();
+        return;
+      }
     }
   });
 
-  function activateEasterEgg() {
-    eggActive = true;
+  let running = false;
+  function activateEgg() {
+    if (running) return;
+    running = true;
+
+    // optional notification (if you have showNotification)
     if (typeof showNotification === "function") {
       showNotification("🎉 Easter Egg Activated! 🤖", "success");
     }
 
-    // Add classes to BOTH <html> and <body> so everything gets affected
-    document.documentElement.classList.add("rainbow", "shake-screen");
-    document.body.classList.add("rainbow", "shake-screen");
+    // Save previous inline animations to restore later
+    const prevHtmlAnim = document.documentElement.style.animation || "";
+    const prevBodyAnim = document.body.style.animation || "";
 
-    // Confetti continuously for 10s (spawns across entire screen)
-    launchConfettiFor(10000, 28); // spawn 28 pieces per burst
+    // Build animation string exactly via style (rainbow + shake together)
+    // You can adjust durations here (rainbow 10s, shake 0.5s repeating)
+    const rainbowAnim = "rainbow 10s linear infinite";
+    const shakeAnim = "shake 0.5s ease-in-out infinite";
+    const combined = `${rainbowAnim}, ${shakeAnim}`;
 
-    // Turn off effects after 10s
+    // Apply directly like your original snippet (but to both html and body)
+    document.documentElement.style.animation = combined;
+    document.body.style.animation = combined;
+
+    // Confetti: spawn bursts across the whole viewport repeatedly for 10s
+    const burstIntervalMs = 120; // burst frequency
+    const burstCount = 24;       // confetti pieces per burst
+    const durationMs = 10000;    // total duration
+    const interval = setInterval(() => spawnBurst(burstCount), burstIntervalMs);
+
+    // Stop after duration and restore previous animations
     setTimeout(() => {
-      document.documentElement.classList.remove("rainbow", "shake-screen");
-      document.body.classList.remove("rainbow", "shake-screen");
-      eggActive = false;
-    }, 10000);
+      clearInterval(interval);
+      // remove any leftover confetti after a grace period
+      setTimeout(() => {
+        document.querySelectorAll(".eg-confetti").forEach(n => n.remove());
+      }, 3500);
+
+      // restore previous inline animation values exactly as they were
+      document.documentElement.style.animation = prevHtmlAnim;
+      document.body.style.animation = prevBodyAnim;
+
+      running = false;
+    }, durationMs);
   }
 
-  // Spawn confetti for `durationMs`, bursting every ~120ms
-  function launchConfettiFor(durationMs, perBurst) {
-    const start = performance.now();
-    const tick = () => {
-      // Make a burst
-      for (let i = 0; i < perBurst; i++) {
-        const c = document.createElement("div");
-        c.className = "confetti";
-        // spawn anywhere (x: 0–100vw, y: -10vh to 100vh)
-        const x = Math.random() * 100;
-        const y = Math.random() * 110 - 10;
-        c.style.left = x + "vw";
-        c.style.top = y + "vh";
-        c.style.width = c.style.height = (Math.random() * 8 + 5) + "px";
-        c.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-        c.style.opacity = (Math.random() * 0.5 + 0.5).toFixed(2);
-        // each piece falls 100vh; random duration & delay for variety
-        const dur = (Math.random() * 3 + 7).toFixed(2); // 7–10s
-        const del = (Math.random() * 0.5).toFixed(2); // 0–0.5s
-        c.style.animationDuration = dur + "s";
-        c.style.animationDelay = del + "s";
-        // add a little horizontal drift
-        const drift = (Math.random() * 40 - 20).toFixed(1); // -20 to 20vw
-        c.style.setProperty("--drift", drift + "vw");
-        // random rotate speed
-        const spin = (Math.random() * 900 + 360).toFixed(0);
-        c.style.setProperty("--spin", spin + "deg");
-        document.body.appendChild(c);
-        // clean up
-        setTimeout(() => c.remove(), (parseFloat(dur) + parseFloat(del)) * 1000 + 100);
-      }
+  // Spawn a burst of confetti anywhere (everywhere)
+  function spawnBurst(count) {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
 
-      if (performance.now() - start < durationMs) {
-        setTimeout(tick, 120); // next burst
-      }
-    };
-    tick();
+    for (let i=0;i<count;i++){
+      const el = document.createElement("div");
+      el.className = "eg-confetti";
+
+      // Size
+      const size = (Math.random()*12 + 6) | 0; // 6-18px
+      el.style.width = size + "px";
+      el.style.height = (size*0.6 | 0) + "px"; // rectangle-ish
+
+      // Start position: anywhere across viewport (use vw/vh units for resilience)
+      const startX = Math.random() * vw;
+      const startY = Math.random() * vh;
+      el.style.left = startX + "px";
+      el.style.top = startY + "px";
+
+      // Color
+      el.style.background = `hsl(${Math.random()*360}, 90%, 55%)`;
+      el.style.borderRadius = (Math.random() > 0.5 ? "2px" : "50%");
+
+      // Animation duration + delay + horizontal drift + spin
+      const dur = (Math.random() * 3 + 7).toFixed(2); // 7-10s
+      const delay = (Math.random() * 0.5).toFixed(2);
+      el.style.animationDuration = `${dur}s`;
+      el.style.animationDelay = `${delay}s`;
+
+      // drift in vw to allow horizontal movement
+      const drift = ((Math.random() - 0.5) * 40).toFixed(1) + "vw";
+      el.style.setProperty("--drift", drift);
+
+      // spin amount (applied inside keyframes by var)
+      const spin = ((Math.random() * 720) + 360) | 0;
+      el.style.setProperty("--spin", spin + "deg");
+
+      // Slight opacity randomness
+      el.style.opacity = (0.6 + Math.random()*0.4).toFixed(2);
+
+      document.body.appendChild(el);
+
+      // cleanup element after it should be done
+      const removeAfter = (parseFloat(dur) + parseFloat(delay)) * 1000 + 200;
+      setTimeout(() => el.remove(), removeAfter);
+    }
   }
-
-  // Inject CSS (rainbow + shake can run TOGETHER)
-  const style = document.createElement("style");
-  style.textContent = `
-    /* Rainbow hue shift (applies to whole page) */
-    @keyframes rainbowHue {
-      0%   { filter: hue-rotate(0deg); }
-      25%  { filter: hue-rotate(90deg); }
-      50%  { filter: hue-rotate(180deg); }
-      75%  { filter: hue-rotate(270deg); }
-      100% { filter: hue-rotate(360deg); }
-    }
-    html.rainbow, body.rainbow {
-      filter: hue-rotate(0deg);
-      animation: rainbowHue 10s linear infinite;
-    }
-
-    /* Screen shake */
-    @keyframes shake {
-      0%, 100% { transform: translate(0, 0); }
-      10% { transform: translate(-10px, 5px); }
-      20% { transform: translate(15px, -5px); }
-      30% { transform: translate(-5px, -10px); }
-      40% { transform: translate(10px, 10px); }
-      50% { transform: translate(-15px, 5px); }
-      60% { transform: translate(5px, -15px); }
-      70% { transform: translate(10px, 5px); }
-      80% { transform: translate(-10px, -5px); }
-      90% { transform: translate(5px, 15px); }
-    }
-    html.shake-screen, body.shake-screen {
-      animation: shake 0.5s infinite;
-    }
-
-    /* When BOTH are on, combine animations (this fixes the override issue) */
-    html.rainbow.shake-screen, body.rainbow.shake-screen {
-      filter: hue-rotate(0deg);
-      animation: rainbowHue 10s linear infinite, shake 0.5s infinite;
-    }
-
-    /* Confetti */
-    @keyframes fall {
-      0%   { transform: translateY(0) translateX(0) rotate(0); opacity: 1; }
-      100% { transform: translateY(100vh) translateX(var(--drift, 0)) rotate(var(--spin, 720deg)); opacity: 0; }
-    }
-    .confetti {
-      position: fixed;
-      pointer-events: none;
-      z-index: 999999;
-      will-change: transform, opacity;
-      animation-name: fall;
-      animation-timing-function: linear;
-      animation-fill-mode: forwards;
-    }
-  `;
-  document.head.appendChild(style);
 })();
