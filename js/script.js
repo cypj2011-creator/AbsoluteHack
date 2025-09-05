@@ -505,107 +505,96 @@ console.log(`
 `);
 
 // Add some fun interactions
-// Easter Egg: "ahdabest" OR "28028"
+// Easter Egg: triggers on "ahdabest" or "28028"
 let secret = [];
-const codes = [
-    ['a','h','d','a','b','e','s','t'],
-    ['2','8','0','2','8']
-];
+const targets = ["ahdabest", "28028"];
 
-document.addEventListener('keydown', e => {
-    secret.push(e.key.toLowerCase());
-    if (secret.length > 8) secret.shift(); // longest code = 8
+// Listen for key presses
+document.addEventListener("keydown", e => {
+  secret.push(e.key.toLowerCase());
+  if (secret.length > 10) secret.shift(); // keep recent 10 keys
 
-    for (let code of codes) {
-        if (secret.slice(-code.length).join('') === code.join('')) {
-            triggerEasterEgg();
-            secret = [];
-        }
-    }
+  const typed = secret.join("");
+  if (targets.some(t => typed.endsWith(t))) {
+    activateEasterEgg();
+    secret = [];
+  }
 });
 
-function triggerEasterEgg() {
-    showNotification('🎉 Easter Egg Activated, Absolute Hack is Da Best! 🤖', 'success');
+function activateEasterEgg() {
+  showNotification("🎉 Easter Egg Activated, Absolute Hack is Da Best! 🤖", "success");
 
-    // Start effects
-    document.body.classList.add('rainbow-filter', 'shake-screen');
+  // Add effects
+  document.body.classList.add("rainbow", "shake-screen");
+  launchConfetti();
 
-    // Confetti for 10 seconds
-    const confettiInterval = setInterval(launchConfettiEverywhere, 300);
-    setTimeout(() => {
-        clearInterval(confettiInterval);
-        document.body.classList.remove('rainbow-filter', 'shake-screen');
-    }, 10000);
+  // Reset after 10s
+  setTimeout(() => {
+    document.body.classList.remove("rainbow", "shake-screen");
+  }, 10000);
 }
 
-// CSS
-const style = document.createElement('style');
-style.textContent = `
-  /* Rainbow filter */
-  @keyframes rainbow {
-      0% { filter: hue-rotate(0deg); }
-      25% { filter: hue-rotate(90deg); }
-      50% { filter: hue-rotate(180deg); }
-      75% { filter: hue-rotate(270deg); }
-      100% { filter: hue-rotate(360deg); }
+// Confetti generator
+function launchConfetti() {
+  for (let i = 0; i < 200; i++) {
+    let c = document.createElement("div");
+    c.className = "confetti";
+    c.style.left = Math.random() * window.innerWidth + "px";
+    c.style.top = Math.random() * window.innerHeight + "px";
+    c.style.backgroundColor = `hsl(${Math.random() * 360},100%,50%)`;
+    let size = Math.random() * 8 + 5;
+    c.style.width = size + "px";
+    c.style.height = size + "px";
+    c.style.animationDuration = (Math.random() * 3 + 7) + "s"; // 7–10s fall
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 10000);
   }
-  .rainbow-filter {
-      animation: rainbow 10s linear infinite;
+}
+
+// Inject CSS for rainbow, shake, confetti
+const style = document.createElement("style");
+style.textContent = `
+  /* Rainbow hue shift */
+  @keyframes rainbow {
+    0% { filter: hue-rotate(0deg); }
+    25% { filter: hue-rotate(90deg); }
+    50% { filter: hue-rotate(180deg); }
+    75% { filter: hue-rotate(270deg); }
+    100% { filter: hue-rotate(360deg); }
+  }
+  body.rainbow {
+    animation: rainbow 10s linear infinite;
   }
 
   /* Screen shake */
   @keyframes shake {
-      0%, 100% { transform: translate(0, 0); }
-      10% { transform: translate(-10px, 5px); }
-      20% { transform: translate(15px, -5px); }
-      30% { transform: translate(-5px, -10px); }
-      40% { transform: translate(10px, 10px); }
-      50% { transform: translate(-15px, 5px); }
-      60% { transform: translate(5px, -15px); }
-      70% { transform: translate(10px, 5px); }
-      80% { transform: translate(-10px, -5px); }
-      90% { transform: translate(5px, 15px); }
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-10px, 5px); }
+    20% { transform: translate(15px, -5px); }
+    30% { transform: translate(-5px, -10px); }
+    40% { transform: translate(10px, 10px); }
+    50% { transform: translate(-15px, 5px); }
+    60% { transform: translate(5px, -15px); }
+    70% { transform: translate(10px, 5px); }
+    80% { transform: translate(-10px, -5px); }
+    90% { transform: translate(5px, 15px); }
   }
-  .shake-screen {
-      animation: shake 0.5s infinite;
+  body.shake-screen {
+    animation: shake 0.5s infinite;
   }
 
   /* Confetti */
-  @keyframes scatter {
-      0% { transform: translate(0,0) rotate(0deg); opacity:1; }
-      100% { transform: translate(var(--xMove), var(--yMove)) rotate(720deg); opacity:0; }
+  @keyframes fall {
+    0% { transform: translateY(0) rotate(0deg); opacity:1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity:0; }
   }
   .confetti {
-      position: fixed;
-      width: 10px;
-      height: 10px;
-      background-color: red;
-      z-index: 99999;
-      pointer-events: none;
-      animation: scatter 3s linear forwards;
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    z-index: 99999;
+    pointer-events: none;
+    animation: fall linear forwards;
   }
 `;
 document.head.appendChild(style);
-
-// Confetti generator (everywhere)
-function launchConfettiEverywhere() {
-    for (let i=0; i<20; i++) { // 20 per burst
-        let c = document.createElement("div");
-        c.className = "confetti";
-        c.style.left = Math.random()*window.innerWidth + "px";
-        c.style.top = Math.random()*window.innerHeight + "px";
-        c.style.backgroundColor = `hsl(${Math.random()*360},100%,50%)`;
-        let size = Math.random()*8+5;
-        c.style.width = size+"px";
-        c.style.height = size+"px";
-
-        // Random scatter direction
-        let xMove = (Math.random()-0.5) * 600 + "px";
-        let yMove = (Math.random()-0.5) * 600 + "px";
-        c.style.setProperty("--xMove", xMove);
-        c.style.setProperty("--yMove", yMove);
-
-        document.body.appendChild(c);
-        setTimeout(()=>c.remove(),3000);
-    }
-}
