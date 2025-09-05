@@ -514,99 +514,89 @@ document.addEventListener('keydown', e => {
     if (secret.length > target.length) secret.shift();
 
     if (secret.join('') === target.join('')) {
-        showNotification('🎉 Easter Egg Activated! 🤖', 'success');
+        showNotification('🎉 Easter Egg Activated, Absolute Hack is Da Best! 🤖', 'success');
 
-        // Rainbow filter across whole page
-        document.body.classList.add('rainbow-filter');
-
-        // Screen shake effect
-        document.body.classList.add('shake-screen');
-
-        // Big text overlay (always in center)
-        showBigTextOverlay("Absolute is Da Best");
-
-        // Launch confetti
-        launchConfetti();
+        // Add effects
+        document.body.classList.add('rainbow-filter', 'shake-screen');
+        launchConfettiEverywhere();
 
         // Reset after 10s
         setTimeout(() => {
-            document.body.classList.remove('rainbow-filter');
-            document.body.classList.remove('shake-screen');
-            removeBigTextOverlay();
+            document.body.classList.remove('rainbow-filter', 'shake-screen');
         }, 10000);
 
         secret = [];
     }
 });
 
-// CSS for rainbow, shake, and text overlay
+// CSS
 const style = document.createElement('style');
 style.textContent = `
-  @keyframes rainbowHue { 0%{filter:hue-rotate(0deg);} 100%{filter:hue-rotate(360deg);} }
-  .rainbow-filter { animation: rainbowHue 5s linear infinite; }
-
-  @keyframes shake {
-    0%, 100% { transform: translate(0,0); }
-    10% { transform: translate(-10px,5px); }
-    20% { transform: translate(10px,-5px); }
-    30% { transform: translate(-5px,-10px); }
-    40% { transform: translate(5px,10px); }
-    50% { transform: translate(-5px,5px); }
-    60% { transform: translate(5px,-5px); }
-    70% { transform: translate(10px,5px); }
-    80% { transform: translate(-10px,-5px); }
-    90% { transform: translate(5px,10px); }
+  /* Rainbow (original multi-step) */
+  @keyframes rainbow {
+      0% { filter: hue-rotate(0deg); }
+      25% { filter: hue-rotate(90deg); }
+      50% { filter: hue-rotate(180deg); }
+      75% { filter: hue-rotate(270deg); }
+      100% { filter: hue-rotate(360deg); }
   }
-  .shake-screen { animation: shake 0.5s infinite; }
+  .rainbow-filter {
+      animation: rainbow 10s ease-in-out infinite;
+  }
 
-  .big-text-overlay {
+  /* Screen shake */
+  @keyframes shake {
+      0%, 100% { transform: translate(0, 0); }
+      10% { transform: translate(-10px, 5px); }
+      20% { transform: translate(15px, -5px); }
+      30% { transform: translate(-5px, -10px); }
+      40% { transform: translate(10px, 10px); }
+      50% { transform: translate(-15px, 5px); }
+      60% { transform: translate(5px, -15px); }
+      70% { transform: translate(10px, 5px); }
+      80% { transform: translate(-10px, -5px); }
+      90% { transform: translate(5px, 15px); }
+  }
+  .shake-screen {
+      animation: shake 0.5s infinite;
+  }
+
+  /* Confetti */
+  @keyframes scatter {
+      0% { transform: translate(0,0) rotate(0deg); opacity:1; }
+      100% { transform: translate(var(--xMove), var(--yMove)) rotate(720deg); opacity:0; }
+  }
+  .confetti {
       position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 80px;
-      font-weight: bold;
-      color: gold;
-      text-shadow: 0 0 20px red, 0 0 40px blue;
+      width: 10px;
+      height: 10px;
+      background-color: red;
       z-index: 99999;
       pointer-events: none;
-      white-space: nowrap;
-      text-align: center;
+      animation: scatter 3s linear forwards;
   }
-
-  @keyframes fall { 0% {transform: translateY(-50px) rotate(0deg); opacity:1;} 100% {transform: translateY(110vh) rotate(720deg); opacity:0;} }
-  .confetti { position: fixed; top: -20px; width: 10px; height: 10px; z-index:99999; pointer-events:none; animation: fall 5s linear forwards; }
 `;
 document.head.appendChild(style);
 
-// Show big text overlay
-function showBigTextOverlay(msg) {
-    let el = document.createElement("div");
-    el.className = "big-text-overlay";
-    el.id = "big-text-overlay";
-    el.textContent = msg;
-    document.body.appendChild(el);
-}
-
-// Remove big text overlay
-function removeBigTextOverlay() {
-    const el = document.getElementById("big-text-overlay");
-    if(el) el.remove();
-}
-
-// Confetti generator
-function launchConfetti() {
-    for (let i=0; i<100; i++) {
+// Confetti generator (everywhere)
+function launchConfettiEverywhere() {
+    for (let i=0; i<150; i++) {
         let c = document.createElement("div");
         c.className = "confetti";
         c.style.left = Math.random()*window.innerWidth + "px";
-        c.style.width = c.style.height = (Math.random()*8+5) + "px";
+        c.style.top = Math.random()*window.innerHeight + "px";
         c.style.backgroundColor = `hsl(${Math.random()*360},100%,50%)`;
-        c.style.animationDelay = (Math.random()*2)+"s";
+        let size = Math.random()*8+5;
+        c.style.width = size+"px";
+        c.style.height = size+"px";
+
+        // Random scatter direction
+        let xMove = (Math.random()-0.5) * 800 + "px";
+        let yMove = (Math.random()-0.5) * 800 + "px";
+        c.style.setProperty("--xMove", xMove);
+        c.style.setProperty("--yMove", yMove);
+
         document.body.appendChild(c);
-        setTimeout(() => c.remove(), 5000);
+        setTimeout(()=>c.remove(),3000);
     }
 }
-
-
-
