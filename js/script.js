@@ -505,34 +505,43 @@ console.log(`
 `);
 
 // Add some fun interactions
-// Easter Egg: "ahdabest"
+// Easter Egg: "ahdabest" OR "28028"
 let secret = [];
-const target = ['a','h','d','a','b','e','s','t'];
+const codes = [
+    ['a','h','d','a','b','e','s','t'],
+    ['2','8','0','2','8']
+];
 
 document.addEventListener('keydown', e => {
     secret.push(e.key.toLowerCase());
-    if (secret.length > target.length) secret.shift();
+    if (secret.length > 8) secret.shift(); // longest code = 8
 
-    if (secret.join('') === target.join('')) {
-        showNotification('🎉 Easter Egg Activated, Absolute Hack is Da Best! 🤖', 'success');
-
-        // Add effects
-        document.body.classList.add('rainbow-filter', 'shake-screen');
-        launchConfettiEverywhere();
-
-        // Reset after 10s
-        setTimeout(() => {
-            document.body.classList.remove('rainbow-filter', 'shake-screen');
-        }, 10000);
-
-        secret = [];
+    for (let code of codes) {
+        if (secret.slice(-code.length).join('') === code.join('')) {
+            triggerEasterEgg();
+            secret = [];
+        }
     }
 });
+
+function triggerEasterEgg() {
+    showNotification('🎉 Easter Egg Activated, Absolute Hack is Da Best! 🤖', 'success');
+
+    // Start effects
+    document.body.classList.add('rainbow-filter', 'shake-screen');
+
+    // Confetti for 10 seconds
+    const confettiInterval = setInterval(launchConfettiEverywhere, 300);
+    setTimeout(() => {
+        clearInterval(confettiInterval);
+        document.body.classList.remove('rainbow-filter', 'shake-screen');
+    }, 10000);
+}
 
 // CSS
 const style = document.createElement('style');
 style.textContent = `
-  /* Rainbow (original multi-step) */
+  /* Rainbow filter */
   @keyframes rainbow {
       0% { filter: hue-rotate(0deg); }
       25% { filter: hue-rotate(90deg); }
@@ -541,7 +550,7 @@ style.textContent = `
       100% { filter: hue-rotate(360deg); }
   }
   .rainbow-filter {
-      animation: rainbow 10s ease-in-out infinite;
+      animation: rainbow 10s linear infinite;
   }
 
   /* Screen shake */
@@ -580,7 +589,7 @@ document.head.appendChild(style);
 
 // Confetti generator (everywhere)
 function launchConfettiEverywhere() {
-    for (let i=0; i<150; i++) {
+    for (let i=0; i<20; i++) { // 20 per burst
         let c = document.createElement("div");
         c.className = "confetti";
         c.style.left = Math.random()*window.innerWidth + "px";
@@ -591,8 +600,8 @@ function launchConfettiEverywhere() {
         c.style.height = size+"px";
 
         // Random scatter direction
-        let xMove = (Math.random()-0.5) * 800 + "px";
-        let yMove = (Math.random()-0.5) * 800 + "px";
+        let xMove = (Math.random()-0.5) * 600 + "px";
+        let yMove = (Math.random()-0.5) * 600 + "px";
         c.style.setProperty("--xMove", xMove);
         c.style.setProperty("--yMove", yMove);
 
