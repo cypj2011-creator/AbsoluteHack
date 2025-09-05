@@ -505,7 +505,6 @@ console.log(`
 `);
 
 // Add some fun interactions
-<script>
 // Easter Egg: triggers on "ahdabest" or "28028"
 let secret = [];
 const targets = ["ahdabest", "28028"];
@@ -522,22 +521,24 @@ document.addEventListener("keydown", e => {
 });
 
 function activateEasterEgg() {
+  // Notification
   if (typeof showNotification === "function") {
-    showNotification("💥 EARTHQUAKE + CONFETTI STORM 🌋🎊", "success");
+    showNotification("💥 MAXIMUM CHAOS MODE ACTIVATED! 🤯", "success");
   }
 
-  // 🌈 Rainbow + SHAKE for 10s
+  // 🌈 Rainbow + Ultra Shake for 10s
   document.body.style.animation = "rainbow 10s linear, shake 0.05s infinite";
   document.documentElement.style.animation = "rainbow 10s linear, shake 0.05s infinite";
 
-  // 🎊 MASSIVE CONFETTI STORM
-  const interval = setInterval(() => spawnConfetti(1000), 30);
+  // 🎊 CRAZY confetti everywhere
+  const interval = setInterval(() => spawnConfetti(500), 50);
 
-  // Stop after 10s (animations & stop spawning)
+  // Stop after 10s
   setTimeout(() => {
     clearInterval(interval);
     document.body.style.animation = "";
     document.documentElement.style.animation = "";
+    document.querySelectorAll(".eg-confetti").forEach(el => el.remove());
   }, 10000);
 }
 
@@ -550,19 +551,19 @@ style.textContent = `
 }
 @keyframes shake {
   0%,100% { transform: translate(0,0) rotate(0deg); }
-  10% { transform: translate(-40px,25px) rotate(-6deg); }
-  20% { transform: translate(45px,-30px) rotate(6deg); }
-  30% { transform: translate(-50px,20px) rotate(-8deg); }
-  40% { transform: translate(50px,-25px) rotate(8deg); }
-  50% { transform: translate(-45px,30px) rotate(-6deg); }
-  60% { transform: translate(40px,-35px) rotate(6deg); }
-  70% { transform: translate(-55px,25px) rotate(-7deg); }
-  80% { transform: translate(55px,-25px) rotate(7deg); }
-  90% { transform: translate(-35px,40px) rotate(-5deg); }
+  10% { transform: translate(-50px,30px) rotate(-12deg); }
+  20% { transform: translate(50px,-30px) rotate(12deg); }
+  30% { transform: translate(-60px,20px) rotate(-15deg); }
+  40% { transform: translate(60px,-40px) rotate(15deg); }
+  50% { transform: translate(-40px,40px) rotate(-10deg); }
+  60% { transform: translate(40px,-50px) rotate(10deg); }
+  70% { transform: translate(-70px,30px) rotate(-18deg); }
+  80% { transform: translate(70px,-30px) rotate(18deg); }
+  90% { transform: translate(-30px,50px) rotate(-8deg); }
 }
 @keyframes confettiFall {
   0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(1440deg); opacity: 0; } /* fades out */
+  100% { transform: translateY(140vh) rotate(2160deg); opacity: 0; }
 }
 .eg-confetti {
   position: fixed;
@@ -579,25 +580,20 @@ function spawnConfetti(count) {
     const el = document.createElement("div");
     el.className = "eg-confetti";
 
-    const size = Math.random() * 10 + 6;
+    const size = Math.random() * 14 + 8;
     el.style.width = size + "px";
     el.style.height = size * 0.6 + "px";
 
-    // Anywhere across the screen
+    // 🎊 Spawn literally ANYWHERE on screen
     el.style.left = Math.random() * window.innerWidth + "px";
-    el.style.top = "-20px"; // always fall from above
+    el.style.top = Math.random() * window.innerHeight + "px";
 
     el.style.background = `hsl(${Math.random()*360}, 90%, 55%)`;
     el.style.borderRadius = Math.random() > 0.5 ? "50%" : "3px";
 
-    // Fall speed
-    const duration = Math.random() * 6 + 6;
-    el.style.animationDuration = duration + "s";
-
-    // Auto-remove after fall
-    el.addEventListener("animationend", () => el.remove());
-
+    el.style.animationDuration = (Math.random() * 4 + 4) + "s";
     document.body.appendChild(el);
+
+    setTimeout(() => el.remove(), 10000);
   }
 }
-</script>
