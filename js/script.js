@@ -522,17 +522,17 @@ document.addEventListener("keydown", e => {
 
 function activateEasterEgg() {
   if (typeof showNotification === "function") {
-    showNotification("💥 EARTHQUAKE + CONFETTI STORM 🌋🎊", "success");
+    showNotification("🌈 Smooth Rainbow + Confetti 🎊", "success");
   }
 
-  // 🌈 Rainbow + SMOOTH SHAKE for 10s
-  document.body.style.animation = "rainbow 10s linear, smoothshake 0.1s infinite";
-  document.documentElement.style.animation = "rainbow 10s linear, smoothshake 0.1s infinite";
+  // 🌈 Rainbow + GENTLE SHAKE for 10s
+  document.body.style.animation = "rainbow 10s linear, gentleShake 0.25s infinite";
+  document.documentElement.style.animation = "rainbow 10s linear, gentleShake 0.25s infinite";
 
-  // 🎊 MASSIVE CONFETTI STORM
-  const interval = setInterval(() => spawnConfetti(1000), 30);
+  // 🎊 CONFETTI STORM
+  const interval = setInterval(() => spawnConfetti(500), 50);
 
-  // Stop after 10s (animations & stop spawning)
+  // Stop after 10s
   setTimeout(() => {
     clearInterval(interval);
     document.body.style.animation = "";
@@ -547,12 +547,11 @@ style.textContent = `
   0% { filter: hue-rotate(0deg); }
   100% { filter: hue-rotate(360deg); }
 }
-@keyframes smoothshake {
+@keyframes gentleShake {
   0%,100% { transform: translate(0,0); }
-  20% { transform: translate(-10px, 5px); }
-  40% { transform: translate(10px, -5px); }
-  60% { transform: translate(-10px, -5px); }
-  80% { transform: translate(10px, 5px); }
+  25% { transform: translate(-5px, 3px); }
+  50% { transform: translate(5px, -3px); }
+  75% { transform: translate(-4px, -2px); }
 }
 @keyframes confettiFall {
   0% { transform: translateY(0) rotate(0deg); opacity: 1; }
@@ -577,18 +576,13 @@ function spawnConfetti(count) {
     el.style.width = size + "px";
     el.style.height = size * 0.6 + "px";
 
-    // Anywhere across the screen
     el.style.left = Math.random() * window.innerWidth + "px";
-    el.style.top = "-20px"; // always fall from above
+    el.style.top = "-20px";
 
     el.style.background = `hsl(${Math.random()*360}, 90%, 55%)`;
     el.style.borderRadius = Math.random() > 0.5 ? "50%" : "3px";
 
-    // Fall speed
-    const duration = Math.random() * 6 + 6;
-    el.style.animationDuration = duration + "s";
-
-    // Auto-remove after fall
+    el.style.animationDuration = (Math.random() * 6 + 6) + "s";
     el.addEventListener("animationend", () => el.remove());
 
     document.body.appendChild(el);
