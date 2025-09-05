@@ -506,17 +506,19 @@ console.log(`
 
 // Add some fun interactions
 // Easter Egg: triggers on "ahdabest" or "28028"
-let secret = [];
+let buffer = "";
 const targets = ["ahdabest", "28028"];
 
 document.addEventListener("keydown", e => {
-  secret.push(e.key.toLowerCase());
-  if (secret.length > 10) secret.shift();
+  buffer += e.key.toLowerCase();
 
-  const typed = secret.join("");
-  if (targets.some(t => typed.endsWith(t))) {
+  // keep only last 20 chars
+  if (buffer.length > 20) buffer = buffer.slice(-20);
+
+  // check triggers
+  if (targets.some(t => buffer.endsWith(t))) {
     activateEasterEgg();
-    secret = [];
+    buffer = ""; // reset after activation
   }
 });
 
@@ -526,11 +528,13 @@ function activateEasterEgg() {
   }
 
   // 🌈 Rainbow + ULTRA SHAKE for 10s
-  document.body.style.animation = "rainbow 10s linear, shake 0.03s infinite";
-  document.documentElement.style.animation = "rainbow 10s linear, shake 0.03s infinite";
+  document.body.style.animation =
+    "rainbow 10s linear, shake 0.05s infinite";
+  document.documentElement.style.animation =
+    "rainbow 10s linear, shake 0.05s infinite";
 
   // 🎊 MASSIVE CONFETTI STORM
-  const interval = setInterval(() => spawnConfetti(1000), 30);
+  const interval = setInterval(() => spawnConfetti(500), 50);
 
   // Stop after 10s (animations & stop spawning) but leave pile
   setTimeout(() => {
@@ -549,19 +553,19 @@ style.textContent = `
 }
 @keyframes shake {
   0%,100% { transform: translate(0,0) rotate(0deg); }
-  10% { transform: translate(-80px,60px) rotate(-15deg); }
-  20% { transform: translate(90px,-70px) rotate(15deg); }
-  30% { transform: translate(-100px,40px) rotate(-20deg); }
-  40% { transform: translate(100px,-60px) rotate(20deg); }
-  50% { transform: translate(-90px,80px) rotate(-12deg); }
-  60% { transform: translate(80px,-100px) rotate(12deg); }
-  70% { transform: translate(-110px,50px) rotate(-18deg); }
-  80% { transform: translate(110px,-50px) rotate(18deg); }
-  90% { transform: translate(-70px,100px) rotate(-10deg); }
+  10% { transform: translate(-120px,80px) rotate(-18deg); }
+  20% { transform: translate(120px,-80px) rotate(18deg); }
+  30% { transform: translate(-140px,100px) rotate(-20deg); }
+  40% { transform: translate(140px,-100px) rotate(20deg); }
+  50% { transform: translate(-120px,120px) rotate(-15deg); }
+  60% { transform: translate(120px,-120px) rotate(15deg); }
+  70% { transform: translate(-140px,90px) rotate(-18deg); }
+  80% { transform: translate(140px,-90px) rotate(18deg); }
+  90% { transform: translate(-100px,130px) rotate(-12deg); }
 }
 @keyframes confettiFall {
   0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(1440deg); opacity: 1; } /* stays visible */
+  100% { transform: translateY(100vh) rotate(1440deg); opacity: 1; }
 }
 .eg-confetti {
   position: fixed;
@@ -584,9 +588,9 @@ function spawnConfetti(count) {
 
     // Anywhere across the screen
     el.style.left = Math.random() * window.innerWidth + "px";
-    el.style.top = "-20px"; // always fall from above
+    el.style.top = "-20px"; // start above screen
 
-    el.style.background = `hsl(${Math.random()*360}, 90%, 55%)`;
+    el.style.background = `hsl(${Math.random() * 360}, 90%, 55%)`;
     el.style.borderRadius = Math.random() > 0.5 ? "50%" : "3px";
 
     // Slower fall = time to reach bottom
