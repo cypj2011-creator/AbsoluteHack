@@ -523,15 +523,15 @@ document.addEventListener("keydown", e => {
 function activateEasterEgg() {
   // Notification
   if (typeof showNotification === "function") {
-    showNotification("🎉 Easter Egg Activated! 🤖", "success");
+    showNotification("🎉 CHAOS MODE ACTIVATED! 🤖", "success");
   }
 
-  // 🌈 Rainbow + Hard Shake for 10s
-  document.body.style.animation = "rainbow 10s linear, shake 0.2s infinite";
-  document.documentElement.style.animation = "rainbow 10s linear, shake 0.2s infinite";
+  // 🌈 Rainbow + Ultra Shake for 10s
+  document.body.style.animation = "rainbow 10s linear, shake 0.1s infinite";
+  document.documentElement.style.animation = "rainbow 10s linear, shake 0.1s infinite";
 
-  // 🎊 Confetti (BIG bursts now)
-  const interval = setInterval(() => spawnConfetti(50), 100);
+  // 🎊 MASSIVE confetti everywhere
+  const interval = setInterval(() => spawnConfetti(150), 80);
 
   // Stop after 10s
   setTimeout(() => {
@@ -551,18 +551,17 @@ style.textContent = `
 }
 @keyframes shake {
   0%,100% { transform: translate(0,0) rotate(0deg); }
-  20% { transform: translate(-20px,10px) rotate(-5deg); }
-  40% { transform: translate(20px,-15px) rotate(5deg); }
-  60% { transform: translate(-15px,20px) rotate(-3deg); }
-  80% { transform: translate(15px,-20px) rotate(3deg); }
+  20% { transform: translate(-30px,15px) rotate(-8deg); }
+  40% { transform: translate(30px,-20px) rotate(8deg); }
+  60% { transform: translate(-25px,25px) rotate(-6deg); }
+  80% { transform: translate(25px,-25px) rotate(6deg); }
 }
 @keyframes confettiFall {
   0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(120vh) rotate(1080deg); opacity: 0; }
+  100% { transform: translateY(120vh) rotate(1440deg); opacity: 0; }
 }
 .eg-confetti {
   position: fixed;
-  top: -10px;
   pointer-events: none;
   z-index: 9999;
   animation: confettiFall linear forwards;
@@ -576,17 +575,20 @@ function spawnConfetti(count) {
     const el = document.createElement("div");
     el.className = "eg-confetti";
 
-    const size = Math.random() * 10 + 6;
+    const size = Math.random() * 12 + 6;
     el.style.width = size + "px";
     el.style.height = size * 0.6 + "px";
+
+    // 🎊 Anywhere on screen
     el.style.left = Math.random() * window.innerWidth + "px";
+    el.style.top = Math.random() * window.innerHeight + "px";
 
     el.style.background = `hsl(${Math.random()*360}, 90%, 55%)`;
     el.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
 
-    el.style.animationDuration = (Math.random() * 3 + 4) + "s";
+    el.style.animationDuration = (Math.random() * 3 + 5) + "s";
     document.body.appendChild(el);
 
-    setTimeout(() => el.remove(), 7000);
+    setTimeout(() => el.remove(), 9000);
   }
 }
