@@ -505,7 +505,7 @@ console.log(`
 `);
 
 // Add some fun interactions
-// ====== Easter Egg Trigger ======
+// Easter Egg: triggers on "ahdabest" or "28028"
 let secret = [];
 const targets = ["ahdabest", "28028"];
 
@@ -520,25 +520,17 @@ document.addEventListener("keydown", e => {
   }
 });
 
-// ====== Easter Egg Activation ======
 function activateEasterEgg() {
-  console.log("🎉 Easter Egg triggered!");
+  // Notification
+  if (typeof showNotification === "function") {
+    showNotification("🎉 Easter Egg Activated! 🤖", "success");
+  }
 
-  // Create overlay container
-  const overlay = document.createElement("div");
-  overlay.id = "easter-overlay";
-  overlay.style.position = "fixed";
-  overlay.style.top = 0;
-  overlay.style.left = 0;
-  overlay.style.width = "100vw";
-  overlay.style.height = "100vh";
-  overlay.style.zIndex = 999999;
-  overlay.style.pointerEvents = "none";
-  overlay.style.overflow = "hidden";
-  overlay.style.animation = "rainbow 10s linear, shake 0.5s infinite";
-  document.body.appendChild(overlay);
+  // 🌈 Rainbow + Shake on whole page for 10s
+  document.body.style.animation = "rainbow 10s linear, shake 0.5s infinite";
+  document.documentElement.style.animation = "rainbow 10s linear, shake 0.5s infinite";
 
-  // Floating Text
+  // 📝 Floating Text (7s)
   const floatingText = document.createElement("div");
   floatingText.innerText = "Absolute Hack Is The Best!";
   floatingText.style.position = "fixed";
@@ -547,39 +539,22 @@ function activateEasterEgg() {
   floatingText.style.transform = "translate(-50%, -50%)";
   floatingText.style.fontSize = "3rem";
   floatingText.style.fontWeight = "bold";
-  floatingText.style.color = `hsl(${Math.random()*360}, 90%, 55%)`;
-  floatingText.style.textAlign = "center";
+  floatingText.style.color = "hsl(" + Math.random()*360 + ", 90%, 55%)";
+  floatingText.style.zIndex = 100000; // VERY high to be on top
+  floatingText.style.pointerEvents = "none";
   floatingText.style.animation = "spinText 3s linear 3";
-  overlay.appendChild(floatingText);
+  document.body.appendChild(floatingText);
+  setTimeout(() => floatingText.remove(), 7000);
 
-  // Spawn confetti repeatedly
-  const interval = setInterval(() => spawnConfetti(20, overlay), 100);
+  // 🎊 Confetti spawner (screen-bound, falling from above)
+  const interval = setInterval(() => spawnConfetti(20), 100);
 
-  // Cleanup after 10s
+  // Stop everything else after 10s
   setTimeout(() => {
     clearInterval(interval);
-    overlay.remove();
+    document.body.style.animation = "";
+    document.documentElement.style.animation = "";
   }, 10000);
-}
-
-// ====== Confetti Generator ======
-function spawnConfetti(count, container) {
-  for (let i = 0; i < count; i++) {
-    const el = document.createElement("div");
-    el.className = "eg-confetti";
-    const size = Math.random() * 8 + 5;
-    el.style.width = size + "px";
-    el.style.height = size * 0.6 + "px";
-    el.style.left = Math.random() * window.innerWidth + "px";
-    el.style.top = "-20px";
-    el.style.background = `hsl(${Math.random()*360}, 90%, 55%)`;
-    el.style.borderRadius = Math.random() > 0.5 ? "50%" : "3px";
-    el.style.position = "fixed";
-    el.style.animation = "confettiFall linear forwards";
-    el.style.animationDuration = (Math.random() * 3 + 4) + "s";
-    container.appendChild(el);
-    setTimeout(() => el.remove(), 10000);
-  }
 }
 
 // ====== Styles ======
@@ -596,7 +571,7 @@ style.textContent = `
   75% { transform: translate(-5px,10px); }
 }
 @keyframes confettiFall {
-  0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
   100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
 }
 @keyframes spinText {
@@ -604,12 +579,29 @@ style.textContent = `
   100% { transform: translate(-50%, -50%) rotate(1080deg); }
 }
 .eg-confetti {
+  position: fixed;  /* screen-bound */
   pointer-events: none;
   z-index: 99999;
+  top: -20px;       /* start above screen */
+  animation: confettiFall linear forwards;
 }
 `;
 document.head.appendChild(style);
-</script>
 
-
+// ====== Confetti ======
+function spawnConfetti(count) {
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement("div");
+    el.className = "eg-confetti";
+    const size = Math.random() * 8 + 5;
+    el.style.width = size + "px";
+    el.style.height = size * 0.6 + "px";
+    el.style.left = Math.random() * window.innerWidth + "px";
+    el.style.background = `hsl(${Math.random()*360}, 90%, 55%)`;
+    el.style.borderRadius = Math.random() > 0.5 ? "50%" : "3px";
+    el.style.animationDuration = (Math.random() * 3 + 4) + "s"; // 4-7s
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 7000); // remove after it falls
+  }
+}
 
