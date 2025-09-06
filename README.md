@@ -1,10 +1,10 @@
 # FTC Team 28028 - Absolute Hack Website
 
-This is the official website for FTC Team 28028 "Absolute Hack" - a competitive robotics team focused on innovation, competition, and winning.
+This is the official website for FTC Team 28028 "Absolute Hack"
 
 ## 🚀 Live Website
 
-Once GitHub Pages is enabled, your website will be available at:
+website will be available at:
 **https://cypj2011-creator.github.io/AbsoluteHack/**
 
 ## 📋 How to Enable GitHub Pages
@@ -20,20 +20,9 @@ Once GitHub Pages is enabled, your website will be available at:
 
 ## 🎯 Website Features
 
-- **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
-- **Modern UI**: Clean, professional design with smooth animations
-- **Interactive Elements**: Dynamic navigation, hover effects, and smooth scrolling
-- **Complete Sections**:
-  - Home/Hero section
-  - About Us
-  - Meet the Team
-  - Our Evolution
-  - Robots showcase
-  - Photo Gallery
-  - Sponsors
-  - Contact information
+To change countdown time is in javascript
 
-## 📁 Project Structure
+## 📁 Project Structure (Dont change)
 
 ```
 ├── index.html          # Main HTML file
@@ -43,25 +32,3 @@ Once GitHub Pages is enabled, your website will be available at:
 │   └── script.js      # Interactive functionality
 └── README.md          # This file
 ```
-
-## 🔧 Technical Details
-
-- **No Build Process Required**: Pure HTML, CSS, and JavaScript
-- **External Dependencies**: 
-  - Google Fonts (Inter font family)
-  - Font Awesome icons
-  - Images hosted on GenSpark CDN
-- **GitHub Pages Compatible**: Ready for immediate deployment
-
-## 📝 Notes
-
-- All original content and styling preserved from the source website
-- No modifications made to design or functionality
-- Fully functional navigation and interactive elements
-- Optimized for GitHub Pages hosting
-
----
-
-**Repository**: https://github.com/cypj2011-creator/AbsoluteHack
-**Team**: FTC Team 28028 - Absolute Hack
-**Status**: Ready for GitHub Pages deployment
