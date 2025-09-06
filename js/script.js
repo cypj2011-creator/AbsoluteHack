@@ -526,12 +526,27 @@ function activateEasterEgg() {
     showNotification("🎉 Easter Egg Activated! 🤖", "success");
   }
 
-  // 🌈 Rainbow + Shake on the whole page for 10s
+  // 🌈 Rainbow + Smooth Shake for 10s
   document.body.style.animation = "rainbow 10s linear, shake 0.5s infinite";
   document.documentElement.style.animation = "rainbow 10s linear, shake 0.5s infinite";
 
-  // 🎊 Confetti spawner
+  // 🎊 Confetti spawner (screen-confetti)
   const interval = setInterval(() => spawnConfetti(15), 150);
+
+  // 🌟 Add spinning text
+  const floatingText = document.createElement("div");
+  floatingText.textContent = "Absolute Hack Is The Best!";
+  floatingText.style.position = "fixed";
+  floatingText.style.top = "50%";
+  floatingText.style.left = "50%";
+  floatingText.style.transform = "translate(-50%, -50%)";
+  floatingText.style.fontSize = "3rem";
+  floatingText.style.color = "#FFD700";
+  floatingText.style.fontWeight = "bold";
+  floatingText.style.zIndex = 9999;
+  floatingText.style.textShadow = "2px 2px 8px black";
+  floatingText.style.animation = "spinText 3s linear 3, fadeOut 7s forwards 3s";
+  document.body.appendChild(floatingText);
 
   // Stop everything after 10s
   setTimeout(() => {
@@ -539,6 +554,7 @@ function activateEasterEgg() {
     document.body.style.animation = "";
     document.documentElement.style.animation = "";
     document.querySelectorAll(".eg-confetti").forEach(el => el.remove());
+    setTimeout(() => floatingText.remove(), 7000); // remove after 7s
   }, 10000);
 }
 
@@ -556,15 +572,25 @@ style.textContent = `
   75% { transform: translate(-5px,10px); }
 }
 @keyframes confettiFall {
-  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
   100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
 }
 .eg-confetti {
-  position: fixed;
-  top: -10px;
+  position: fixed; /* stays on screen */
+  top: -20px;
   pointer-events: none;
   z-index: 9999;
   animation: confettiFall linear forwards;
+}
+
+/* Spinning text animation */
+@keyframes spinText {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(1080deg); } /* 360° x 3 */
+}
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  100% { opacity: 1; } /* stays visible for 7s */
 }
 `;
 document.head.appendChild(style);
@@ -574,13 +600,22 @@ function spawnConfetti(count) {
   for (let i = 0; i < count; i++) {
     const el = document.createElement("div");
     el.className = "eg-confetti";
+
     const size = Math.random() * 8 + 5;
     el.style.width = size + "px";
     el.style.height = size * 0.6 + "px";
+
+    // Anywhere across the screen (position fixed)
     el.style.left = Math.random() * window.innerWidth + "px";
+    el.style.top = "-20px";
+
     el.style.background = `hsl(${Math.random()*360}, 90%, 55%)`;
-    el.style.animationDuration = (Math.random() * 2 + 3) + "s";
+    el.style.borderRadius = Math.random() > 0.5 ? "50%" : "3px";
+
+    // Fall duration
+    el.style.animationDuration = (Math.random() * 3 + 4) + "s"; // 4-7s
+
     document.body.appendChild(el);
-    setTimeout(() => el.remove(), 6000);
+    setTimeout(() => el.remove(), 8000); // remove after it falls
   }
 }
