@@ -505,7 +505,7 @@ console.log(`
 `);
 
 // Add some fun interactions
-// Easter Egg: triggers on "ahdabest" or "28028"
+// ====== Easter Egg Trigger ======
 let secret = [];
 const targets = ["ahdabest", "28028"];
 
@@ -520,17 +520,25 @@ document.addEventListener("keydown", e => {
   }
 });
 
+// ====== Easter Egg Activation ======
 function activateEasterEgg() {
-  // Notification
-  if (typeof showNotification === "function") {
-    showNotification("🎉 Easter Egg Activated! 🤖", "success");
-  }
+  console.log("🎉 Easter Egg triggered!");
 
-  // 🌈 Rainbow + Shake on whole page for 10s
-  document.body.style.animation = "rainbow 10s linear, shake 0.5s infinite";
-  document.documentElement.style.animation = "rainbow 10s linear, shake 0.5s infinite";
+  // Create overlay container
+  const overlay = document.createElement("div");
+  overlay.id = "easter-overlay";
+  overlay.style.position = "fixed";
+  overlay.style.top = 0;
+  overlay.style.left = 0;
+  overlay.style.width = "100vw";
+  overlay.style.height = "100vh";
+  overlay.style.zIndex = 999999;
+  overlay.style.pointerEvents = "none";
+  overlay.style.overflow = "hidden";
+  overlay.style.animation = "rainbow 10s linear, shake 0.5s infinite";
+  document.body.appendChild(overlay);
 
-  // 📝 Floating Text (7s)
+  // Floating Text
   const floatingText = document.createElement("div");
   floatingText.innerText = "Absolute Hack Is The Best!";
   floatingText.style.position = "fixed";
@@ -540,23 +548,38 @@ function activateEasterEgg() {
   floatingText.style.fontSize = "3rem";
   floatingText.style.fontWeight = "bold";
   floatingText.style.color = `hsl(${Math.random()*360}, 90%, 55%)`;
-  floatingText.style.zIndex = 999999; // on top
-  floatingText.style.pointerEvents = "none";
   floatingText.style.textAlign = "center";
   floatingText.style.animation = "spinText 3s linear 3";
-  document.body.appendChild(floatingText);
-  setTimeout(() => floatingText.remove(), 7000);
+  overlay.appendChild(floatingText);
 
-  // 🎊 Confetti spawner (screen-bound, falling immediately)
-  const interval = setInterval(() => spawnConfetti(20), 100);
+  // Spawn confetti repeatedly
+  const interval = setInterval(() => spawnConfetti(20, overlay), 100);
 
-  // Stop everything after 10s
+  // Cleanup after 10s
   setTimeout(() => {
     clearInterval(interval);
-    document.body.style.animation = "";
-    document.documentElement.style.animation = "";
-    document.querySelectorAll(".eg-confetti").forEach(el => el.remove());
+    overlay.remove();
   }, 10000);
+}
+
+// ====== Confetti Generator ======
+function spawnConfetti(count, container) {
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement("div");
+    el.className = "eg-confetti";
+    const size = Math.random() * 8 + 5;
+    el.style.width = size + "px";
+    el.style.height = size * 0.6 + "px";
+    el.style.left = Math.random() * window.innerWidth + "px";
+    el.style.top = "-20px";
+    el.style.background = `hsl(${Math.random()*360}, 90%, 55%)`;
+    el.style.borderRadius = Math.random() > 0.5 ? "50%" : "3px";
+    el.style.position = "fixed";
+    el.style.animation = "confettiFall linear forwards";
+    el.style.animationDuration = (Math.random() * 3 + 4) + "s";
+    container.appendChild(el);
+    setTimeout(() => el.remove(), 10000);
+  }
 }
 
 // ====== Styles ======
@@ -581,29 +604,12 @@ style.textContent = `
   100% { transform: translate(-50%, -50%) rotate(1080deg); }
 }
 .eg-confetti {
-  position: fixed;  /* stays on screen */
   pointer-events: none;
   z-index: 99999;
-  top: -20px;       /* start above viewport */
-  animation: confettiFall linear forwards;
 }
 `;
 document.head.appendChild(style);
+</script>
 
-// ====== Confetti ======
-function spawnConfetti(count) {
-  for (let i = 0; i < count; i++) {
-    const el = document.createElement("div");
-    el.className = "eg-confetti";
-    const size = Math.random() * 8 + 5;
-    el.style.width = size + "px";
-    el.style.height = size * 0.6 + "px";
-    el.style.left = Math.random() * window.innerWidth + "px";
-    el.style.background = `hsl(${Math.random()*360}, 90%, 55%)`;
-    el.style.borderRadius = Math.random() > 0.5 ? "50%" : "3px";
-    el.style.animationDuration = (Math.random() * 3 + 4) + "s"; // 4-7s
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 7000); // remove after animation
-  }
-}
+
 
