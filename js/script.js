@@ -540,8 +540,9 @@ function activateEasterEgg() {
   floatingText.style.fontSize = "3rem";
   floatingText.style.fontWeight = "bold";
   floatingText.style.color = "hsl(" + Math.random()*360 + ", 90%, 55%)";
-  floatingText.style.zIndex = 100000; // VERY high to be on top
+  floatingText.style.zIndex = 999999; // VERY high to be on top
   floatingText.style.pointerEvents = "none";
+  floatingText.style.textAlign = "center";
   floatingText.style.animation = "spinText 3s linear 3";
   document.body.appendChild(floatingText);
   setTimeout(() => floatingText.remove(), 7000);
@@ -571,7 +572,7 @@ style.textContent = `
   75% { transform: translate(-5px,10px); }
 }
 @keyframes confettiFall {
-  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
   100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
 }
 @keyframes spinText {
@@ -604,4 +605,5 @@ function spawnConfetti(count) {
     setTimeout(() => el.remove(), 7000); // remove after it falls
   }
 }
+
 
