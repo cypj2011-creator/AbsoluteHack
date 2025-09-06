@@ -530,9 +530,6 @@ function activateEasterEgg() {
   document.body.style.animation = "rainbow 10s linear, shake 0.5s infinite";
   document.documentElement.style.animation = "rainbow 10s linear, shake 0.5s infinite";
 
-  // 🎊 Confetti (drops from top, visible on screen)
-  const interval = setInterval(() => spawnConfetti(20), 100);
-
   // 📝 Floating Text (7s)
   const floatingText = document.createElement("div");
   floatingText.innerText = "Absolute Hack Is The Best!";
@@ -543,20 +540,20 @@ function activateEasterEgg() {
   floatingText.style.fontSize = "3rem";
   floatingText.style.fontWeight = "bold";
   floatingText.style.color = "hsl(" + Math.random()*360 + ", 90%, 55%)";
-  floatingText.style.zIndex = 99999;
+  floatingText.style.zIndex = 100000; // VERY high to be on top
   floatingText.style.pointerEvents = "none";
   floatingText.style.animation = "spinText 3s linear 3";
   document.body.appendChild(floatingText);
-
-  // Remove text after 7s
   setTimeout(() => floatingText.remove(), 7000);
+
+  // 🎊 Confetti spawner (screen-bound, falling from above)
+  const interval = setInterval(() => spawnConfetti(20), 100);
 
   // Stop everything else after 10s
   setTimeout(() => {
     clearInterval(interval);
     document.body.style.animation = "";
     document.documentElement.style.animation = "";
-    document.querySelectorAll(".eg-confetti").forEach(el => el.remove());
   }, 10000);
 }
 
@@ -575,18 +572,17 @@ style.textContent = `
 }
 @keyframes confettiFall {
   0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(110vh) rotate(720deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
 }
 @keyframes spinText {
   0% { transform: translate(-50%, -50%) rotate(0deg); }
   100% { transform: translate(-50%, -50%) rotate(1080deg); }
 }
 .eg-confetti {
-  position: fixed;
+  position: fixed;  /* screen-bound */
   pointer-events: none;
-  z-index: 9999;
-  top: 0;
-  left: 0;
+  z-index: 99999;
+  top: -20px;       /* start above screen */
   animation: confettiFall linear forwards;
 }
 `;
@@ -602,8 +598,10 @@ function spawnConfetti(count) {
     el.style.height = size * 0.6 + "px";
     el.style.left = Math.random() * window.innerWidth + "px";
     el.style.background = `hsl(${Math.random()*360}, 90%, 55%)`;
+    el.style.borderRadius = Math.random() > 0.5 ? "50%" : "3px";
     el.style.animationDuration = (Math.random() * 3 + 4) + "s"; // 4-7s
     document.body.appendChild(el);
-    setTimeout(() => el.remove(), 7000);
+    setTimeout(() => el.remove(), 7000); // remove after it falls
   }
 }
+
