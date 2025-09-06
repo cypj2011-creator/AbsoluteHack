@@ -539,22 +539,23 @@ function activateEasterEgg() {
   floatingText.style.transform = "translate(-50%, -50%)";
   floatingText.style.fontSize = "3rem";
   floatingText.style.fontWeight = "bold";
-  floatingText.style.color = "hsl(" + Math.random()*360 + ", 90%, 55%)";
-  floatingText.style.zIndex = 999999; // VERY high to be on top
+  floatingText.style.color = `hsl(${Math.random()*360}, 90%, 55%)`;
+  floatingText.style.zIndex = 999999; // on top
   floatingText.style.pointerEvents = "none";
   floatingText.style.textAlign = "center";
   floatingText.style.animation = "spinText 3s linear 3";
   document.body.appendChild(floatingText);
   setTimeout(() => floatingText.remove(), 7000);
 
-  // 🎊 Confetti spawner (screen-bound, falling from above)
+  // 🎊 Confetti spawner (screen-bound, falling immediately)
   const interval = setInterval(() => spawnConfetti(20), 100);
 
-  // Stop everything else after 10s
+  // Stop everything after 10s
   setTimeout(() => {
     clearInterval(interval);
     document.body.style.animation = "";
     document.documentElement.style.animation = "";
+    document.querySelectorAll(".eg-confetti").forEach(el => el.remove());
   }, 10000);
 }
 
@@ -580,10 +581,10 @@ style.textContent = `
   100% { transform: translate(-50%, -50%) rotate(1080deg); }
 }
 .eg-confetti {
-  position: fixed;  /* screen-bound */
+  position: fixed;  /* stays on screen */
   pointer-events: none;
   z-index: 99999;
-  top: -20px;       /* start above screen */
+  top: -20px;       /* start above viewport */
   animation: confettiFall linear forwards;
 }
 `;
@@ -602,8 +603,7 @@ function spawnConfetti(count) {
     el.style.borderRadius = Math.random() > 0.5 ? "50%" : "3px";
     el.style.animationDuration = (Math.random() * 3 + 4) + "s"; // 4-7s
     document.body.appendChild(el);
-    setTimeout(() => el.remove(), 7000); // remove after it falls
+    setTimeout(() => el.remove(), 7000); // remove after animation
   }
 }
-
 
