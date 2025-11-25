@@ -523,7 +523,7 @@ document.addEventListener("keydown", e => {
 function activateEasterEgg() {
   // Notification
   if (typeof showNotification === "function") {
-    showNotification("🎉 Easter Egg Activated! 🤖", "success");
+    showNotification("🎉 You Have Found Brain! 🧠", "success");
   }
 
   // 🌈 Rainbow + Shake on whole page for 10s
@@ -540,14 +540,14 @@ function activateEasterEgg() {
   floatingText.style.fontSize = "3rem";
   floatingText.style.fontWeight = "bold";
   floatingText.style.color = "hsl(" + Math.random()*360 + ", 90%, 55%)";
-  floatingText.style.zIndex = 100000; // VERY high to be on top
+  floatingText.style.zIndex = 100000;
   floatingText.style.pointerEvents = "none";
   floatingText.style.animation = "spinText 3s linear 3";
   document.body.appendChild(floatingText);
   setTimeout(() => floatingText.remove(), 7000);
 
-  // 🎊 Confetti spawner (screen-bound, falling from above)
-  const interval = setInterval(() => spawnConfetti(20), 100);
+  // 🎊 Falling IMAGES instead of confetti
+  const interval = setInterval(() => spawnImages(20), 100);
 
   // Stop everything else after 10s
   setTimeout(() => {
@@ -570,38 +570,40 @@ style.textContent = `
   50% { transform: translate(10px,-5px); }
   75% { transform: translate(-5px,10px); }
 }
-@keyframes confettiFall {
+@keyframes picFall {
   0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
 }
 @keyframes spinText {
   0% { transform: translate(-50%, -50%) rotate(0deg); }
   100% { transform: translate(-50%, -50%) rotate(1080deg); }
 }
-.eg-confetti {
-  position: fixed;  /* screen-bound */
+.eg-pic {
+  position: fixed;
+  top: -60px;
   pointer-events: none;
   z-index: 99999;
-  top: -20px;       /* start above screen */
-  animation: confettiFall linear forwards;
+  animation: picFall linear forwards;
 }
 `;
 document.head.appendChild(style);
 
-// ====== Confetti ======
-function spawnConfetti(count) {
+// ====== Falling Pictures ======
+function spawnImages(count) {
   for (let i = 0; i < count; i++) {
-    const el = document.createElement("div");
-    el.className = "eg-confetti";
-    const size = Math.random() * 8 + 5;
-    el.style.width = size + "px";
-    el.style.height = size * 0.6 + "px";
-    el.style.left = Math.random() * window.innerWidth + "px";
-    el.style.background = `hsl(${Math.random()*360}, 90%, 55%)`;
-    el.style.borderRadius = Math.random() > 0.5 ? "50%" : "3px";
-    el.style.animationDuration = (Math.random() * 3 + 4) + "s"; // 4-7s
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 7000); // remove after it falls
+    const img = document.createElement("img");
+    img.className = "eg-pic";
+
+    img.src = "https://www.genspark.ai/api/files/s/RhYPNjKw"; // YOUR IMAGE
+
+    const size = Math.random() * 40 + 60; // 60–100px
+    img.style.width = size + "px";
+    img.style.height = "auto";
+    img.style.left = Math.random() * window.innerWidth + "px";
+    img.style.animationDuration = (Math.random() * 3 + 4) + "s";
+
+    document.body.appendChild(img);
+
+    setTimeout(() => img.remove(), 7000);
   }
 }
-
