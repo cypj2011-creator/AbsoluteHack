@@ -910,14 +910,60 @@ hideBtn.addEventListener('click', () => {
                 </div>
                 
                 <div class="footer-section">
-                    <h4>Connect With Us</h4>
-                    <div class="footer-social">
-                        <a href="https://www.instagram.com/ftc.absolutehack.28028/" class="social-link" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
-                        <a href="https://www.facebook.com/absolutehack10" class="social-link" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook"></i></a>
-                        <a href="mailto:absolutehack10@gmail.com" class="social-link"><i class="fas fa-envelope"></i></a>
-                    </div>
-                </div>
-            </div>
+    <h4>Connect With Us</h4>
+    <div class="footer-social">
+        <a href="https://www.instagram.com/ftc.absolutehack.28028/" class="social-link" target="_blank" rel="noopener noreferrer">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram">
+        </a>
+        <a href="https://www.facebook.com/absolutehack10" class="social-link" target="_blank" rel="noopener noreferrer">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Facebook">
+        </a>
+        <a href="mailto:absolutehack10@gmail.com" class="social-link">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Mail_%28iOS%29.svg" alt="Email">
+        </a>
+    </div>
+</div>
+
+<style>
+.footer-section {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.footer-section h4 {
+    font-size: 1.5em;
+    margin-bottom: 12px;
+    color: #fff; /* Change to your footer text color */
+}
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.footer-social .social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 55px;
+    height: 55px;
+    background-color: #0071e3; /* Main circle color */
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.footer-social .social-link img {
+    width: 60%; /* Adjust logo size inside circle */
+    height: 60%;
+}
+
+.footer-social .social-link:hover {
+    transform: scale(1.2);
+    background-color: #005bb5; /* Darker hover color */
+}
+</style>
+
             
             <div class="footer-bottom">
                 <p>&copy; 2025 FTC Team 28028 Absolute Hack. All rights reserved.</p>
