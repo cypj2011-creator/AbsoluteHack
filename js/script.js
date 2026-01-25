@@ -69,7 +69,7 @@ function initializeNavigation() {
 function initializeCountdown() {
     // Set the date we're counting down to (example: next competition)
     // You can change this to any future date
-    const countDownDate = new Date("2026-01-16T07:00:00").getTime();
+    const countDownDate = new Date("2026-04-29T07:00:00").getTime();
 
     // Update the countdown every 1 second
     const countdownInterval = setInterval(function() {
