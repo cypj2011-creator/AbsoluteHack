@@ -102,7 +102,8 @@ function initializeCountdown() {
             if (secondsElement) secondsElement.innerHTML = "00";
         }
     }, 1000);
-}
+
+    initializeCountdown();
 
 // Scroll Animations
 function initializeScrollAnimations() {
