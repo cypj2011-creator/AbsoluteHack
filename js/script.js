@@ -67,43 +67,34 @@ function initializeNavigation() {
 
 // Countdown Timer
 function initializeCountdown() {
-    // Set the date we're counting down to (example: next competition)
-    // You can change this to any future date
     const countDownDate = new Date("2026-04-29T00:00:00").getTime();
 
-    // Update the countdown every 1 second
     const countdownInterval = setInterval(function() {
         const now = new Date().getTime();
         const distance = countDownDate - now;
 
-        // Time calculations for days, hours, minutes and seconds
         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
         const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        // Display the result in the elements
         const daysElement = document.getElementById("days");
         const hoursElement = document.getElementById("hours");
         const minutesElement = document.getElementById("minutes");
         const secondsElement = document.getElementById("seconds");
 
-        if (daysElement) daysElement.innerHTML = String(days).padStart(2, '0');
-        if (hoursElement) hoursElement.innerHTML = String(hours).padStart(2, '0');
-        if (minutesElement) minutesElement.innerHTML = String(minutes).padStart(2, '0');
-        if (secondsElement) secondsElement.innerHTML = String(seconds).padStart(2, '0');
+        if (daysElement) daysElement.innerHTML = String(Math.max(0, days)).padStart(2, '0');
+        if (hoursElement) hoursElement.innerHTML = String(Math.max(0, hours)).padStart(2, '0');
+        if (minutesElement) minutesElement.innerHTML = String(Math.max(0, minutes)).padStart(2, '0');
+        if (secondsElement) secondsElement.innerHTML = String(Math.max(0, seconds)).padStart(2, '0');
 
-        // If the countdown is finished
         if (distance < 0) {
             clearInterval(countdownInterval);
-            if (daysElement) daysElement.innerHTML = "00";
-            if (hoursElement) hoursElement.innerHTML = "00";
-            if (minutesElement) minutesElement.innerHTML = "00";
-            if (secondsElement) secondsElement.innerHTML = "00";
         }
     }, 1000);
+}
 
-    initializeCountdown();
+initializeCountdown();
 
 // Scroll Animations
 function initializeScrollAnimations() {
